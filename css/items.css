@@ -1,0 +1,70 @@
+.pendingPR, .supplier, .offices, .items, .forwarded, .conainer header, main, footer {
+  padding-left: 300px;
+  padding-top: 70px; 
+}
+
+.container{
+  margin-top: 85px;
+}
+.pendingPR, .suppliers, .offices, .items, .forwarded, .container{
+  margin: 20px;
+  padding-left: 300px;
+  margin-left: 300px;
+  padding: 70px;
+}
+
+@media only screen and (max-width : 992px) {
+  body, header, main, footer{
+    padding-left: 0;
+    margin-left: 0;
+  }
+  .suppliers, .items, .offices, .pendingPR, .forwarded, .container{
+    margin-left: 0px; 
+    padding: 0 20px;
+    padding-top: 70px; 
+  }
+  .container{
+    margin-left: 50px;
+  }
+}
+
+@media only screen and (min-height: 700px){
+  body, .suppliers, .items, .offices, .pendingPR, .forwarded{
+    overflow-x: hidden;
+  }
+  table{
+  text-align: center !important;
+  height: 475px;
+  }
+  /*edited*/
+  tbody {
+      display:block;
+      height:85%;
+      overflow:auto;
+  }
+  thead, tbody tr {
+      display:table;
+      width:100%;
+      table-layout:fixed;
+  }
+}
+
+a.btn{
+  margin-top: 25px;
+}
+
+
+
+.td1 {
+  display: none;
+}
+
+button{
+  margin-top: 15px;
+}
+
+td.edit, td.delete,
+th.edit, th.delete{
+  width: 90px !important;
+}
+

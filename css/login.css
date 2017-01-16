@@ -1,0 +1,24 @@
+.card-panel{
+	width: 30% !important;
+	margin: 1% auto 7% auto;
+}
+h4, h5{
+	text-align: center;
+}
+input{
+	margin: 0 !important;
+}
+#log.row{
+	margin: 10px 1px !important;
+}
+body{
+	overflow: hidden;
+}
+img{
+	display: block;
+	margin: 5% auto 0 auto;
+	width: 10%;
+}
+.container{
+	margin-top: 25px;
+}
