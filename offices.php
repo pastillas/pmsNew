@@ -26,11 +26,11 @@
 			$sql = "INSERT INTO offices values('$office_code', '$office_head', '$office_name', '$office_department')";
 			
 			if(!mysqli_query($conn, $sql)){
-				echo "<script type='text/javascript'>alert('ERROR Saving Record.')</script>"  ;
+				echo "<script type='text/javascript'>alert('ERROR saving record.')</script>"  ;
 			}
 		}
 
-	if(isset($_POST['updateOfficeSave'])){
+	if(isset($_POST['editOfficeSubmit'])){
 		$office_head = ucwords($_POST['officeHead']);
 		$office_code = strtoupper($_POST['officeCode']);
 		$office_name = ucwords($_POST['officeName']);
@@ -51,22 +51,45 @@
 <!-- ADD SUPPLIER MODAL-->
 <div id="modal1" class="modal modal-fixed-footer">
   <div class="modal-content">
-    <h4>ADD OFFICE</h4>
+    <h4>ADD SUPPLIER</h4>
     <div class="row">
-    	<form method="POST">
-    		<input type="text" id="officeCode" id="officeCode" name="officeCode" placeholder="Office Code" required>
+    	<form action="<?php echo $_SERVER['PHP_SELF']?>" method="POST" id="addOfficeForm">
+    		<input type="text" id="officeCode" name="officeCode" placeholder="Office Code" required>
     		<label>Office Code</label>
-    		<input type="text" id="officeHead" id="officeHead" name="officeHead" placeholder="Office Head" required>
+    		<input type="text" id="officeHead" name="officeHead" placeholder="Office Head" required>
     		<label>Office Head</label>
-    		<input type="text" id="officeName" id="officeName" name="officeName" placeholder="Office Name" required>
+    		<input type="text" id="officeName" name="officeName" placeholder="Office Name" required>
     		<label>Office Name</label>
-    		<input type="text" id="officeDepartment" id="officeDepartment" name="officeDepartment" placeholder="Department" required>
+    		<input type="text" id="officeDepartment" name="officeDepartment" placeholder="Department" required>
     		<label>Department</label>
     	</form>
     </div>
   </div>
   <div class="modal-footer">
   	<button type="submit" form="addOfficeForm" name="addOfficeSubmit" class="waves-effect waves-light btn-flat">Save Changes</button>
+  </div>
+</div>
+
+<div id="editModal" class="modal modal-fixed-footer" >
+  <div class="modal-content">
+    <h4>EDIT SUPPLIER</h4>
+    <div class="row">
+    	<form action="<?php echo $_SERVER['PHP_SELF']?>" method="POST" id="editOfficeForm">
+    		
+    		<p id="officeCodeP"></p>
+    		<input type="text" id="officeHead" name="officeHead" placeholder="Office Head" required>
+    		<label>Office Head</label>
+    		<input type="text" id="officeName" name="officeName" placeholder="Office Name" required>
+    		<label>Office Name</label>
+    		<input type="text" id="officeDepartment" name="officeDepartment" placeholder="Department" required>
+    		<label>Department</label>
+    		<input type="hidden" id="officeCode" name="officeCode" placeholder="Office Code" required >
+    		
+    	</form>
+    </div>
+  </div>
+  <div class="modal-footer">
+  	<button type="submit" form="editOfficeForm" name="editOfficeSubmit" class="waves-effect waves-light btn-flat">Save Changes</button>
   </div>
 </div>
 
@@ -92,24 +115,26 @@
         <tbody>
           <?php
         		$sql = 'SELECT * FROM offices';
-						$offices =  mysqli_query($conn, $sql);
+				$offices =  mysqli_query($conn, $sql);
 
         		while(($row = mysqli_fetch_assoc($offices)) != null){
-						echo '<tr>' . 
-						 '<td>' . $row['office_code'] . '</td>' .
-						 '<td>' . $row['office_head'] . '</td>' .
-						 '<td>' . $row['office_name'] . '</td>' .
-						 '<td>' . $row['office_department'] . '</td>' .
-						 '</tr>';
 
-						 //'<td class="edit"><a class="waves-effect waves-teal btn-flat" onclick=updateSupplier(' . $row['supplier_pk'] . ') ><i class="material-icons teal-text">edit</i></a></td>' . 
-						}
+					echo '<tr onclick="editOffice(\'' . $row['office_code'] . '\')">' .
+					 '<td id="oc' . $row['office_code'] . '">' . $row['office_code'] . '</td>' .
+					 '<td id="oh' . $row['office_code'] . '">' . $row['office_head'] . '</td>' .
+					 '<td id="on' . $row['office_code'] . '">' . $row['office_name'] . '</td>' .
+					 '<td id="od' . $row['office_code'] . '">' . $row['office_department'] . '</td>' .
+					 '</tr>';
+
+					 //'<td class="edit"><a class="waves-effect waves-teal btn-flat" onclick=updateSupplier(' . $row['supplier_pk'] . ') ><i class="material-icons teal-text">edit</i></a></td>' . 
+				}
           ?>
         </tbody>
       </table>
     </div>
   </div>
 </div>
+
 
 	<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 	<script src="js/materialize.js"></script>
@@ -123,6 +148,21 @@
     // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
     $('.modal').modal();
   });
+
+  function editOffice(office_code){
+  	var office_name = document.getElementById("on" + office_code).innerHTML;
+  	var office_head = document.getElementById("oh" + office_code).innerHTML;
+  	var office_department = document.getElementById("od" + office_code).innerHTML;
+  	var editOfficeForm = document.getElementById("editOfficeForm");
+  	document.getElementById("officeCodeP").innerHTML = "Office Code: " + office_code;
+  	editOfficeForm.officeCode.value = office_code;
+  	editOfficeForm.officeName.value = office_name;
+  	editOfficeForm.officeHead.value = office_head;
+  	editOfficeForm.officeDepartment.value = office_department;
+  	$('#editModal').openModal();
+  }
+
+
 </script>
 </body>
 </html>
