@@ -44,9 +44,9 @@ CREATE TABLE IF NOT EXISTS USERS(
 
 CREATE TABLE IF NOT EXISTS PURCHASE_REQUEST(
 	pr_number INT NOT NULL AUTO_INCREMENT, 
-	pr_year YEAR NOT NULL,
-	pr_department INT(2) NOT NULL,
-	pr_dev_section INT(2) NOT NULL,
+	pr_year INT NOT NULL,
+	pr_department VARCHAR(32) NOT NULL,
+	pr_dev_section VARCHAR(32) NOT NULL,
 	pr_purpose VARCHAR(100) NOT NULL,
 	office_code VARCHAR(6) NOT NULL,
 	pr_sai_number INT NULL,
@@ -56,7 +56,6 @@ CREATE TABLE IF NOT EXISTS PURCHASE_REQUEST(
 	pr_obr_number INT NULL,
 	CONSTRAINT pr_number_pk PRIMARY KEY(pr_number),
 	CONSTRAINT office_code_fk FOREIGN KEY(office_code) REFERENCES OFFICES(office_code)
-	
 );
 
 CREATE TABLE IF NOT EXISTS PURCHASE_REQUEST_ITEMS(
@@ -64,6 +63,7 @@ CREATE TABLE IF NOT EXISTS PURCHASE_REQUEST_ITEMS(
 	quantity INT NULL,
 	item_code VARCHAR(20) NOT NULL,
 	pr_number INT NOT NULL,
+	pr_iten_euc DOUBLE NOT NULL,
 	CONSTRAINT pr_items_id PRIMARY KEY(pr_items_id),
 	CONSTRAINT item_code_fk FOREIGN KEY(item_code) REFERENCES ITEMS(item_code),
 	CONSTRAINT pr_number_fk_items FOREIGN KEY(pr_number) REFERENCES PURCHASE_REQUEST(pr_number)
@@ -8548,11 +8548,6 @@ INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplie
 INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "26910-JRB LAKSHMI SOLAR MERCHANDISING", "BDPHI BLDG. COR. PENAFRANCIA & PANGANIBAN DRIVE, SAN FRANCISCO, NAGA CITY", "SAN FRANCISCO", "OLAÑO, JANETTE AVILA", "WDD-SOLAR PANEL" );
 INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "10874-PURE TIRE GENERAL MERCHANDISE", "ZONE 1ANITA TAN BLDG., MAHARLIKA HIGHWAY, CON. GRANDE, NAGA CITY", "CONCEPCION GRANDE", "MONTANA, GREGORIO R", "WDD-TIRE" );
 INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "13503-JB HEART", "DR.3 PAV. PANGANIBAN DRIVE, NAGA CITY", "TRIANGULO", "BARIAS, RYAN E.", "WDD-TIRE" );
-INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "", "", "", "", "" );
-INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "", "", "", "", "" );
-INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "", "", "", "", "" );
-INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "", "", "", "", "" );
-INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "", "", "Generated: ETRACS, 3-25-2015", "", "" );
 
 /*=============================================== */
 /*============== list of offices ============== */
