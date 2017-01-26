@@ -5,104 +5,114 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
   <title>Parallax Template - Materialize</title>
 
-  <!-- CSS  -->
+ <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.0/css/materialize.min.css'>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
   <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
-  <link href="css/items.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="css/createPO.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="css/sidenav.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link rel="stylesheet" type="text/css" href="css/datatable.css">
+  <?php require("connection.php");
+
+    //if(!isset($_POST['pr_po_status_id']))
+      //header('Location: pendingPR.php' );
+
+    $pr_po_status_id = $_POST['pr_po_status_id'];
+    $sql = 'SELECT * FROM pr_po_status ps, purchase_request pr, offices o WHERE ps.pr_po_status_id = ' . $pr_po_status_id . ' AND  ps.pr_number = pr.pr_number AND ps.for_payment = 0 AND pr.office_code = o.office_code ;';
+    
+    $query  = mysqli_query($conn, $sql);
+    $pr_po_status = mysqli_fetch_assoc($query);
+
+    $purhcase_order = array('po_number' => 'N/A', 'po_date' => 'N/A');
+    if($pr_po_status['po_number'] != null){
+      $sql = 'SELECT po_number, po_date FROM purhcase_order WHERE po_number = ' . $pr_po_status . ';';
+      $query  = mysqli_query($conn, $sql);
+      $purhcase_order = mysqli_fetch_assoc($query);
+    }
+  ?>
 
 </head>
-<style type="text/css">
-.modal{
-  width: 500px !important;
-}
-table{
-  text-align: center !important;
-  height: 300px !important;
-}
-tbody {
-    display:block;
-    height:100%;
-    overflow:auto;
-}
-thead, tbody tr {
-    display:table;
-    width:100%;
-    table-layout:fixed;
-}
-.modal .modal-fixed-footer{
-  height: 100% !important;
-}
-button{
-  margin-top: 5px;
-}
-</style>
+<script type="text/javascript">
+  var selectedItems = [];
+</script>
 <body>
   <!--Navs-->
-  <?php 
-  include("navbar.php");
-  ?>
-  <?php 
-  include("sidebar.php");
-  ?>
-
+ 
+ 
+<h4 class="center-align">EDIT PURCHASE REQUEST</h4>
   <div class="container">
-    <h4 class="center-align">Purchase Request Details</h4>
-    <div class="divider"></div>
     <div class="row">
       <div class="col s5">
         <div class="card-panel">
           <div class="row">
-            <form class="col s12">
+            <form class="col s12" action="" method="POST" onsubmit="return validatePR()" id="createPRForm">
               <div class="row">
                 <div class="input-field col s6">
-                  <input name="pr_number" id="PR_Number" type="hidden" class="validate">
-                  <p id="PR_Number_P">PR #: </p>
+                  <input name="pr_number" value="<?php echo  $pr_po_status['pr_number']; ?>" id="PR_Number" type="hidden" class="validate">
+                  <p id="PR_Number_P">PR #: <?php echo $pr_po_status['pr_number']?> </p>
                 </div>
 
                 <div class="input-field col s6">
-                  <input id="PO_Number" name="po_number" type="hidden" class="validate">
-                  <p id="PO_Number_P">PO #: </p>
+                  <input id="PO_Number" value="<?php echo $purhcase_order['po_number'];?>" name="po_number" type="hidden" class="validate">
+                  <p id="PO_Number_P">PO #: <?php echo $purhcase_order['po_number']?></p>
                 </div>
                 <div class="input-field col s12">
-                  <input " id="Date_PR" type="date" class="datepicker">
+                  <input " id="Date_PR" type="date" value="<?php echo $pr_po_status['pr_date']?>" class="datepicker">
                   <label for="Date_PR">PR Date</label>
                 </div>
                 <div class="input-field col s12">
-                  <input id="Date_PR" type="date" class="datepicker">
-                  <label for="Date_PR">PO Date</label>
+                  <?php 
+                    if($purhcase_order['po_date'] == 'N/A')
+                      echo '<input id="Date_PO" disabled="true"  value="N/A" disabled="true" type="date" class="datepicker">';
+                    else 
+                      echo '<input id="Date_PO" disabled="true"  value="' . $purhcase_order['po_date'] . '" type="date" class="datepicker">';
+                  ?>
+                  <label for="Date_PO">PO Date</label>
                 </div>
+                 <div class="input-field col s12">
+              <input  name="pr_department" id="Department" value="<?php echo $pr_po_status['pr_department']?>" type="text" class="validate" required="true">
+              <label for="Department">Department</label>
+            </div>
                 <div class="input-field col s12">
-                  <input  id="Department" type="text" class="validate">
-                  <label for="Department">Department</label>
-                </div>
-                <div class="input-field col s12">
-                  <input id="Division_Section" type="text" class="validate">
+                  <input  name="pr_dev_section" value="<?php echo $pr_po_status['pr_dev_section']?>" id="Division_Section" type="text" class="validate" required="true">
                   <label for="Division_Section">Division/Section</label>
                 </div>
                <div class="input-field col s12">
-                  <input  id="Purpose" type="text" class="validate">
+                  <input name="pr_purpose" value="<?php echo $pr_po_status['pr_purpose']?>" id="Purpose" type="text" class="validate" required="true">
                   <label for="Purpose">Purpose</label>
                 </div>
+
                 <div class="input-field col s12">
-                  <input  id="Requestor" type="text" class="validate">
-                  <label for="Requestor">Requesting Office</label>
+                  <select id="Requestor" name="office_code">
+                    <?php 
+                      $sql = 'SELECT * FROM offices order by office_head;';
+                      $result = mysqli_query($conn, $sql);
+
+                      while(($row = mysqli_fetch_assoc($result)) != null){
+                        if($row['office_code'] == $pr_po_status['office_code'])
+                          echo '<option value="' . $row['office_code'] . '" selected>' . $row['office_head'] . '</option>';
+                        else
+                          echo '<option value="' . $row['office_code'] . '" >' . $row['office_head'] . '</option>';
+                      }
+                    ?>
+                  </select>
+                  <label for="Requestor">Requesting Officer</label>
                 </div>
                 <div class="input-field col s6">
-                  <input id="SAI_Number" type="text" class="validate">
+                  <input name="pr_sai_number" value="<?php echo $pr_po_status['pr_sai_number']?>" id="SAI_Number" type="number" class="validate">
                   <label for="SAI_Number">SAI Number</label>
                 </div>
                 <div class="input-field col s6">
-                  <input  id="Date_SAI" type="date" class="datepicker">
-                  <label for="Date_SAI">Date</label>
+                  <input name="pr_sai_date" value="<?php echo $pr_po_status['pr_sai_date']?>" id="Date_SAI" type="date" class="datepicker">
+                  <label for="Date_SAI">SAI Date</label>
                 </div>
                 <div class="input-field col s6">
-                  <input  id="OBR_Number" type="text" class="validate">
+                  <input name="pr_obr_number" value="<?php echo $pr_po_status['pr_obr_number']?>" id="OBR_Number" type="number" class="validate">
                   <label for="OBR_Number">OBR Number</label>
                 </div>
                 <div class="input-field col s6">
-                  <input  id="Date_OBR" type="date" class="datepicker">
-                  <label for="Date_OBR">Date</label>
+                  <input  name="pr_obr_date" value="<?php echo $pr_po_status['pr_obr_date']?>" id="Date_OBR" type="date" class="datepicker">
+                  <label for="Date_OBR">OBR Date</label>
                 </div>
               </div>
             </form>
@@ -131,38 +141,124 @@ button{
       </thead>
 
       <tbody id="tbodyitems">
+        <?php 
+            $sql = ' select * from items i left outer join purchase_request_items pi ON i.item_code = pi.item_code WHERE pi.pr_number = ' . $pr_po_status['pr_number'] . ';';
+            $pr_items = mysqli_query($conn, $sql);
+            $total = 0;
+
+            while(($row = mysqli_fetch_assoc($pr_items)) != null){
+              echo '<tr>'.
+                    '<td>' . $row['item_description'] . '</td>' . 
+                    '<td>' . $row['item_unit_measure'] . '</td>' . 
+                    '<td>Php ' . $row['item_euc'] . '</td>' .
+                    '<td>' . $row['quantity'] . '</td>' .
+                    '<td>Php ' . $row['quantity'] * $row['item_euc'] . '</td>' .
+                    '</tr>';
+               echo '<script type="text/javascript">selectedItems.push(\'' . $row['item_code'] . '\')</script>';
+                     
+              $total += $row['quantity'] * $row['item_euc'];
+            }
+
+        ?>
+
         <tr>
           <td class="tg-yw4l" colspan="4">Total Estimated Cost</td>
-          <td class="tg-yw4l" colspan="2">0.00</td>
+          <td class="tg-yw4l" colspan="2"><?php echo 'Php ' . $total;?></td>
         </tr>
       </tbody>
     </table>
         <div class="col s10 offset-s2">
-          <a href="editPR.php" class="waves-effect waves-light btn">EDIT</a>
+          <button type="submit" form="createPRForm" id="createPRSubmit" name="createPRSubmit" class="waves-effect waves-light btn">SAVE</button>
           <a href="#" class="waves-effect waves-light btn">DELETE</a>
-          <a href="pendingPR.php" class="waves-effect waves-light btn">PRINT PR</a>
-        </div>
-        <div class="col s11 offset-s3" >
           <a href="#" class="waves-effect waves-light btn" style="margin-top:5px;">CREATE PURCHASE ORDER</a>
         </div>
       </div>
     </div>
   </div>
 
+<p id="p"></p>
+<div id="modal1" class="modal modal-fixed-footer" >
+  <div class="modal-content">
+
+    <div class="row">
+      <div id="admin" class="col s12">
+        <div class="card material-table">
+          <div class="table-header">
+            <span class="table-title">SELECT PR ITEMS</span>
+            <div class="actions">
+              <a href="#" class="search-toggle waves-effect waves-light btn-flat nopadding"><i class="material-icons">search</i></a>
+            </div>
+          </div>
+
+          <form method="POST" id="addItemForm" onsubmit="return addPRItems()">
+            <table id="datatable">
+
+              <thead>
+                <tr>
+                  <th>Select Items</th>
+                  <th>Description</th>
+                  <th>Unit Measure</th>
+                  <th>Estimated Unit Cost</th>
+                  <th>Quantity</th>
+                </tr>
+              </thead>
+              <tbody id="tbody">
+                <?php
+                  $sql = 'SELECT * FROM items';
+                  $items =  mysqli_query($conn, $sql);
 
 
-  <!--  Scripts-->
+                  $sql = ' select * from items i left outer join purchase_request_items pi ON i.item_code = pi.item_code WHERE pi.pr_number = ' . $pr_po_status['pr_number'] . ';';
+                  $pr_items = mysqli_query($conn, $sql);
+
+                  while(($row = mysqli_fetch_assoc($items)) != null){
+                    $found = false;
+
+                    while(($pr_item = mysqli_fetch_assoc($pr_items)) != null){
+                      if($row['item_code'] == $pr_item['item_code']){
+                        echo '<tr>' .
+                          '<td><input type="checkbox" checked onclick="addSellectedItems('  . "'" . $row['item_code'] .  "'" . ')" id="' . $row['item_code'] . '" /> <label for="' . $row['item_code'] . '">'. $row['item_code'] . '</label></td> '.
+                          '<td id="idc' . $row['item_code'] . '">' . $row['item_description'] . '</td>' .
+                          '<td id="iu' . $row['item_code'] . '">' . $row['item_unit_measure'] . '</td>' .
+                          '<td ><input type="number" step=any class="active" required placeholder="E.U.C" name="euc" id="euc' . $row['item_code'] . '" value=' . $pr_item['pr_item_euc'] . '></td>' .
+                          '<td ><input type="number" class="active" required placeholder="Quantity" name="quantity" id="quantity' . $row['item_code'] .   '" value=' . $pr_item['quantity'] . '></td>'.
+                          '</tr>';
+                        $found = true;
+                        break;
+                      }
+                    }
+
+                    if(!$found){
+                      echo '<tr>' .
+                        '<td><input type="checkbox" onclick="addSellectedItems('  . "'" . $row['item_code'] .  "'" . ')" id="' . $row['item_code'] . '" /> <label for="' . $row['item_code'] . '">'. $row['item_code'] . '</label></td> '.
+                        '<td id="idc' . $row['item_code'] . '">' . $row['item_description'] . '</td>' .
+                        '<td id="iu' . $row['item_code'] . '">' . $row['item_unit_measure'] . '</td>' .
+                        '<td ><input type="number" step=any class="active" required placeholder="E.U.C" name="euc" id="euc' . $row['item_code'] . '" value=' . $row['item_euc'] . ' disabled></td>' .
+                        '<td ><input type="number" class="active" required placeholder="Quantity" name="quantity" id="quantity' . $row['item_code'] .   '" disabled></td>'.
+                        '</tr>';
+                    }
+                  }
+                ?>
+              </tbody>
+            </table>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" form="addItemForm" id="addItemSubmit" name="addItemSubmit" class="waves-effect waves-light btn-flat">Save Changes</button>
+    <p id="bugtak"></p>
+  </div>
+
   <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script src="js/materialize.js"></script>
-  <script src="js/init.js"></script>
+  <script src='http://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js'></script>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.0/js/materialize.min.js'></script>
+  <script src="js/datatable.js"></script>
+  <script src="js/moment.js"></script>
   <script type="text/javascript">
-    $(function () {
-        $('#addOffice').click(function () {
-            $('.td1').toggle();
-        });
-    });
-  </script>
-  <script type="text/javascript">
+
   $('.datepicker').pickadate({
     selectMonths: true, // Creates a dropdown to control month
     selectYears: 15 // Creates a dropdown of 15 years to control year
@@ -171,8 +267,11 @@ button{
     // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
     $('.modal').modal();
   });
-  </script>
-  <script type="text/javascript">
+
+  $(document).ready(function() {
+    $('select').material_select();
+  });
+
   // Initialize collapse button
   $('.button-collapse').sideNav({
       menuWidth: 300, // Default is 240
@@ -181,7 +280,123 @@ button{
       draggable: true // Choose whether you can drag to open on touch screens
     }
   );
-     
+
+  function openModal(){
+    $("#modal1").openModal();
+  }
+
+  function addSellectedItems( item_code ){
+    var checkBox = document.getElementById(item_code);
+    if(checkBox.checked){
+      selectedItems.push(item_code);
+      document.getElementById("quantity" + item_code).disabled = false;
+      document.getElementById("quantity" + item_code).focus();
+      document.getElementById("euc" + item_code).disabled = false;
+    }
+    else{
+      removeFromSelectedItems( item_code );
+      document.getElementById("quantity" + item_code).disabled = true;
+      document.getElementById("euc" + item_code).disabled = true;
+    }
+  }
+
+  function removeFromSelectedItems( item_code ){
+    for(i = 0; i < selectedItems.length; i++){
+      if(selectedItems[i] == item_code){
+        selectedItems.splice(i, 1);
+        break;
+      }
+    }
+  }
+
+  function openModal(){
+    $("#modal1").openModal();
+  }
+
+  function addPRItems(){
+    var string = "";
+    var total = 0;
+          for(i = 0; i < selectedItems.length; i++){
+            total += (document.getElementById("quantity" + selectedItems[i]).value * document.getElementById("euc" + selectedItems[i]).value);
+            string += "<tr onclick='openModal()'><td>" + document.getElementById("idc" + selectedItems[i]).innerHTML + "</td>" + 
+                "<td>" + document.getElementById("iu" + selectedItems[i]).innerHTML + "</td>" +
+                "<td>Php " + document.getElementById("euc" + selectedItems[i]).value + "</td>" + 
+                "<td>" + document.getElementById("quantity" + selectedItems[i]).value + "</td>" +  
+                "<td>Php " + (document.getElementById("quantity" + selectedItems[i]).value * document.getElementById("euc" + selectedItems[i]).value) + "</td></tr>"; 
+          }
+          string += '<tr><td class="tg-yw4l" colspan="4"><b>Total Estimated Cost</b></td><td class="tg-yw4l" colspan="2"><b>Php ' +  total + '</b></td></tr>'
+          document.getElementById("tbodyitems").innerHTML = string;
+
+          $("#modal1").closeModal();
+
+    return false;
+  }
+
+
+
+  function validatePR(){
+
+
+    if(! $('#Requestor').val()){
+      Materialize.toast('Please add the Requesting Officer. Thank you!', 3000, 'rounded');
+      return false;
+    }
+
+    if(selectedItems.length < 1){
+      Materialize.toast('Please add PR Items. Thank you!', 3000, 'rounded');
+      return false;
+    }else{
+        $.ajax({
+            url: "modules/updatePR.php",
+            method: "post",
+            data: $('form').serialize(),
+            datatype: "text",
+            success: function(strMessage){
+              
+              var pr_number = document.getElementById('PR_Number').value;
+              document.getElementById('bugtak').innerHTML = strMessage;
+
+              if(strMessage == "ERROR")
+                Materialize.toast('ERROR saving record', 3000, 'rounded');
+              else{
+                $.ajax({
+                  type: "POST",
+                  url: "modules/deletePRItems.php",
+                  data: "pr_number=" + pr_number,
+                  success: function(strMessage){
+                    if(strMessage == "ERROR")
+                      Materialize.toast('ERROR saving record', 3000, 'rounded');
+                    else{
+                      for(i = 0; i < selectedItems.length; i++){
+                          var pr_number = document.getElementById('PR_Number').value;
+                          var pr_item_euc = document.getElementById("euc" + selectedItems[i]).value;
+                          var quantity = document.getElementById("quantity" + selectedItems[i]).value;
+
+                          $.ajax({
+                            type: "POST",
+                            url: "modules/insertPRItems.php",
+                            data: 'pr_number=' + pr_number + '&item_code=' + selectedItems[i] + '&pr_item_euc=' + pr_item_euc + '&quantity=' + quantity,
+                            success: function(strMessage){
+                              //window.location = "http://localhost/pmsNew/pendingPR.php";
+                              document.getElementById('p').innerHTML = strMessage;
+                              alert(selectedItems);
+                            }
+                          });
+                        }
+                    }
+                  }
+                });
+              } 
+            },
+            error: function(){
+              console.log('Ajax request NOT received!');
+            }
+          });
+    }
+
+    return false;
+ }
+
   // Initialize collapsible (uncomment the line below if you use the dropdown variation)
   //$('.collapsible').collapsible();
         
