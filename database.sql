@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS PURCHASE_REQUEST_ITEMS(
 	quantity INT NULL,
 	item_code VARCHAR(20) NOT NULL,
 	pr_number INT NOT NULL,
-	pr_iten_euc DOUBLE NOT NULL,
+	pr_item_euc DOUBLE NOT NULL,
 	CONSTRAINT pr_items_id PRIMARY KEY(pr_items_id),
 	CONSTRAINT item_code_fk FOREIGN KEY(item_code) REFERENCES ITEMS(item_code),
 	CONSTRAINT pr_number_fk_items FOREIGN KEY(pr_number) REFERENCES PURCHASE_REQUEST(pr_number)
@@ -73,24 +73,34 @@ CREATE TABLE IF NOT EXISTS PURCHASE_ORDER(
 	po_number INT NOT NULL AUTO_INCREMENT,
 	po_year YEAR NOT NULL,
 	pr_number INT NOT NULL ,
-	supplier_pk INT NOT NULL ,
 	po_mode_of_procurement VARCHAR(50) NULL,
 	po_place_of_delivery VARCHAR(100) NULL,
 	po_date date NULL,
 	po_delivery_term VARCHAR(50) NULL,
 	po_payment_term VARCHAR(50) NULL,
 	po_d_tracks VARCHAR(32) NULL,
-	po_delivery_date date,
-	po_delivered_date date,
-	po_for_payment boolean,
 	CONSTRAINT po_number_pk PRIMARY KEY(po_number),
-	CONSTRAINT po_supplier_pk_fk FOREIGN KEY(supplier_pk)  REFERENCES SUPPLIER(supplier_pk),
 	CONSTRAINT po_pr_number_fk FOREIGN KEY(pr_number) REFERENCES PURCHASE_REQUEST(pr_number)
+);
+
+CREATE TABLE IF NOT EXISTS PR_PO_STATUS(
+	pr_po_status_id INT NOT NULL AUTO_INCREMENT,
+	for_payment boolean,
+	po_number INT NULL,
+	pr_number INT NOT NULL,
+	supplier_pk INT NULL,
+	delivery_date date,
+	delivered_date date,
+	forwarded_date date,
+	status VARCHAR(10),
+	CONSTRAINT pr_po_status_id_pk PRIMARY KEY(pr_po_status_id),
+	CONSTRAINT pr_po_po_number_fk FOREIGN KEY(po_number) REFERENCES PURCHASE_ORDER(po_number),
+	CONSTRAINT po_supplier_pk_fk FOREIGN KEY(supplier_pk)  REFERENCES SUPPLIER(supplier_pk),
+	CONSTRAINT pr_po_pr_number_fk FOREIGN KEY(pr_number) REFERENCES PURCHASE_REQUEST(pr_number)
 );
 /*=============================================== */
 /*============== list of suppliers ============== */
 /*=============================================== */
-INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "TRADE NAME", "ADDRESS", "BRGY", "TAXPAYER NAME", "NATURE OF BUSINESS" );
 INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "25955-INNOSERVE ENTERPRISES", "G/F TRADERS SQUARE BLDG. P. BURGOS ST. STA. CRUZ, NAGA CITY", "STA. CRUZ", "EVANGELISTA, ENRICO AVELINO ALMEDA", "ADMINISTRATIVE OFFICE" );
 INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "282-BILLARD HALL", "BAGUMBAYAN SUR, NAGA CITY", "BAGUMBAYAN SUR", "ESCARO, PATRIA STA ,MARIA", "AP-AMUSEMENT/RECREATION" );
 INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "1957-PEÑAFRANCIA RESORTS", "CAROLINA, NAGA CITY", "CAROLINA", "PEÑAFRANCIA RESORT INC.,  ", "AP-AMUSEMENT/RECREATION" );
@@ -769,7 +779,7 @@ INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplie
 INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "23214-CVMB THE BEAUTY LOUNGE", "BICHARA MALL, GEN. LUNA AT., ABELLA, NAGA CITY", "ABELLA", "MATIAS, MARIE TALAY", "CONT-BEAUTY/BARBER SHOP" );
 INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "22506-SALON DE EMIRATES", "UNIT 6 BICHARA MALL, ABELLA, NAGA CITY", "ABELLA", "MAGAS, ALEJANDRO CONSTANTINO", "CONT-BEAUTY/BARBER SHOP" );
 INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "17443-LIBOTON BARBER SHOP", "278 LIBOTON ST., NAGA CITY", "BAGUMBAYAN SUR", "DIAZ, NORMAN M.", "CONT-BEAUTY/BARBER SHOP" );
-INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "8226-", "MARGIE"" BEAUTY PARLOR"", "20 Z-1 BAG. SUR NAGA CITY", "BAGUMBAYAN SUR", "AVELLANA, MARGARITA BENOSA" );
+INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "8226-", "MARGIE BEAUTY PARLOR", "20 Z-1 BAG. SUR NAGA CITY", "BAGUMBAYAN SUR", "AVELLANA, MARGARITA BENOSA" );
 INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "21188-FEDITH BEAUTY PARLOR", "456 BAGUMBAYAN SUR, NAGA CITY", "BAGUMBAYAN SUR", "SANCHO, RONEL A.", "CONT-BEAUTY/BARBER SHOP" );
 INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "21466-LLONDONAIRE BEAUTY CENTRE", "G/F AVENUE SQUARE BLDG. ZONE 4, BALATAS NAGA CITY", "BALATAS", "PROMENTILLA, EVANGELINE GARCIA", "CONT-BEAUTY/BARBER SHOP" );
 INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "19413-ROBLES BEAUTY SALON BY NANZ", "ROCO BLDG. BALATAS ROAD, BALATAS, NAGA CITY", "BALATAS", "ROBLES, ANUNSIACION MAPA", "CONT-BEAUTY/BARBER SHOP" );
@@ -1407,7 +1417,7 @@ INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplie
 INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "19834", "J. HERNANDEZ AVE., ABELLA, NAGA CITY", "ABELLA", "HERNANDEZ, JAMES GABRIELLE ALANIS", "CONT-SERVICES" );
 INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "17059-PUSO ELECTRICAL AND REWINDING SHOP", "ZONE 1 MABULO, NAGA CITY", "ABELLA", "PUSO, GILBERT JOVEN", "CONT-SERVICES" );
 INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "20049-BEARCAT R. REYES EMISSION TESTING CENTER", "#116 ZONE 3 ABELLA ST. ABELLA, NAGA CITY", "ABELLA", "REYES, RAYMOND F.", "CONT-SERVICES" );
-INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "13522-", "R"" DENTAL HEALTH PLUS MARKETING"", "2ND FLR. BICHARA MALL, NAGA CITY", "ABELLA", "DY, RUBY V." );
+INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "13522-", "R DENTAL HEALTH PLUS MARKETING", "2ND FLR. BICHARA MALL, NAGA CITY", "ABELLA", "DY, RUBY V." );
 INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "25959-BRUTEFORCE COMPUTER SOLUTIONS", "GROUND FLOOR, BICHARA MALL, NAGA CITY", "ABELLA", "BOBIS, JASPER ALI LEE", "CONT-SERVICES" );
 INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "25630-PINK AND BLUE CREATIVE WORKS", "9 ABELLA ST. ABELLA NAGA CITY", "ABELLA", "LACERNA, PEEJAY PENSABER", "CONT-SERVICES" );
 INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "13945-HBC SHOP MORE", "CORNER PRIETO & J. HERNANDEZ ST., ABELLA, NAGA CITY", "ABELLA", "HBC INC.", "CONT-SERVICES" );
@@ -2303,7 +2313,7 @@ INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplie
 INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "24783-KUSOG BICOL ALLIANCE INC.", "PH1 L15 B 4 4TH ST., PARKVIEW VILLAGE, SAN FELIPE, NAGA CITY", "SAN FELIPE", "KUSOG BICOL ALLIANCE INC.", "OFFICE" );
 INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "12079-SQUAREPOINT TECHNICAL SERVICES", "3RD FLR. GALLERIA DE SAN FRANCISCO, NAGA CITY", "SAN FRANCISCO", "ALTAR, LILIBETH C.", "OFFICE" );
 INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "22468-METSTAR REALTY DEV'T CORP.", "T. ENRILE BLDG. ZONE 4, SAN FRANCISCO, N. C.", "SAN FRANCISCO", "METSTAR REALTY DEV'T. CORP.", "OFFICE" );
-INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "26586- ", "MANTO NIN PAGKAMOOT"" CHILDREN'S FOUNDATION", " INC", ",", "45 DIMASALANG ST. STA. CRUZ" );
+INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "26586- ", "MANTO NIN PAGKAMOOT CHILDREN'S FOUNDATION", " INC", ",", "45 DIMASALANG ST. STA. CRUZ" );
 INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "20989-ASSOCIATES IN DEVELOPMENT IN RURAL PHILS. (AID-RP), INC.", "285 MONZON BLDG. COR. E. ANGELES & ARANA STS., NAGA CITY", "STA. CRUZ", "ASSOCIATES IN DEVELOPMENT IN RURAL PHILS. (AID-RP), INC.", "OFFICE" );
 INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "23557-NAGA MARKET STALLHOLDERS FEDERATION (NAMASFED) INC.", "GF 1ST LEVEL, BLK 29 STALL 1, 2,& 4, NCPM, NAGA CITY", "SUPERMARKET", "NAGA MARKET STALLHOLDERS FEDERATION (NAMASFED) INC.", "OFFICE" );
 INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "26694", "732 BIAK NA BATO, TABUCO,NAGACITY", "TABUCO", "GREEN WEALTH HOLDINGS % DEVELOPMENT CORP.", "OFFICE" );
@@ -4869,8 +4879,8 @@ INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplie
 INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "20838-8-15 STORE", "INSULAR ST., DÑA CONCHITA SUBD., DEL ROSARIO, N.C.", "DEL ROSARIO", "GONZALES, EUGENIO TEODORO JR. BRIOSO", "RET-E-LOAD" );
 INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "15741-.", "ZONE 1 DRUPAI, DEL ROSARIO, NAGA CITY", "DEL ROSARIO", "SANCHEZ, MARIVIC G", "RET-E-LOAD" );
 INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "26904-", "SALCEDA-TIMOTEO BLDG. PANGANIBAN DRIVE, DINAGA NAGA CITY", "DINAGA", "PELAGIO, DIANA GRACE ESPIRITU", "RET-E-LOAD" );
-INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "13302-", "LAGAMAYO TELECOMS"""", "OJEDA ST., DINAGA, NAGA CITY", "DINAGA", "LAGAMAYO, MARY GUILLAN B." );
-INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "13302-", "LAGAMAYO TELECOMS"""", "OJEDA ST., DINAGA, NAGA CITY", "DINAGA", "LAGAMAYO, MARY GUILLAN B." );
+INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "13302-", "LAGAMAYO TELECOMS", "OJEDA ST., DINAGA, NAGA CITY", "DINAGA", "LAGAMAYO, MARY GUILLAN B." );
+INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "13302-", "LAGAMAYO TELECOMS", "OJEDA ST., DINAGA, NAGA CITY", "DINAGA", "LAGAMAYO, MARY GUILLAN B." );
 INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "26128-", "134 BALINTAWAK ST. LERMA, NAGA CITY", "LERMA", "DUMAWAL, MARY FRANCE VALENCIANO", "RET-E-LOAD" );
 INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "26128-", "134 BALINTAWAK ST. LERMA, NAGA CITY", "LERMA", "DUMAWAL, MARY FRANCE VALENCIANO", "RET-E-LOAD" );
 INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "12939-AMARO SARI-SARI STORE", "CALSADA ST., MABOLO, NAGA CITY", "MABULO", "AMARO, ROSENA TESORERO", "RET-E-LOAD" );
@@ -5406,7 +5416,7 @@ INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplie
 INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "22538-7 ELEVEN", "REGENT HOTEL, CACERES ST., DINAGA, NAGA CITY", "DINAGA", "PHILIPPINE SEVEN CORPORATION", "RET-GENERAL MERCHANDISE" );
 INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "58-MJJM DEPARTMENT STORE", "#74 PRIETO ST., DINAGA,  NAGA CITY", "DINAGA", "DACUDAO JR., JOSE GERONA", "RET-GENERAL MERCHANDISE" );
 INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "14614-SUPER FORTUNA MECHANDISING", "CACERES ST., DINAGA, NAGA CITY", "DINAGA", "UNG, CARMENCITA ", "RET-GENERAL MERCHANDISE" );
-INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "13302-", "LAGAMAYO TELECOMS"""", "OJEDA ST., DINAGA, NAGA CITY", "DINAGA", "LAGAMAYO, MARY GUILLAN B." );
+INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "13302-", "LAGAMAYO TELECOMS", "OJEDA ST., DINAGA, NAGA CITY", "DINAGA", "LAGAMAYO, MARY GUILLAN B." );
 INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "2538-NAGA MULTI-BRAND DISTRIBUTOR", "GENERAL LUNA ST., DINAGA, NAGA CITY", "DINAGA", "BONACUA, SIMEON L.", "RET-GENERAL MERCHANDISE" );
 INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "18167-SUPER VIN COMMERCIAL", "PRIETO ST., NAGA CITY", "DINAGA", "CHENG, SHELANIE O.", "RET-GENERAL MERCHANDISE" );
 INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "298-BIDA COMMERCIAL", "PRIETO ST. DINAGA NAGA CITY", "DINAGA", "CABRAL, ARTHUR D", "RET-GENERAL MERCHANDISE" );
@@ -5487,7 +5497,7 @@ INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplie
 INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "10473-NEW HI QUALITY MERCHANDISING", "#107 CALLE CACERES, DINAGA", "DINAGA", "UNG, JOSE  ", "RET-GENERAL MERCHANDISE" );
 INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "25324-RRB SHI FASHION COLLECTION", "CACERES ST., DINAGA, NAGA CITY", "DINAGA", "BASILOY, RISSA BORRES", "RET-GENERAL MERCHANDISE" );
 INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "2301-FORTUNA DEP'T. STORE", "#22 GEN. LUNA ST., NAGA CITY", "DINAGA", "UNG, EDUARDO UY", "RET-GENERAL MERCHANDISE" );
-INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "13302-", "LAGAMAYO TELECOMS"""", "OJEDA ST., DINAGA, NAGA CITY", "DINAGA", "LAGAMAYO, MARY GUILLAN B." );
+INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "13302-", "LAGAMAYO TELECOMS", "OJEDA ST., DINAGA, NAGA CITY", "DINAGA", "LAGAMAYO, MARY GUILLAN B." );
 INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "22151-REDLOGO LIFESTYLE, INC.", "AAF BLDG. 2ND FLR. GEN. LUNA COR. EVANGELISTA ST. DINAGA, NAGA CITY", "DINAGA", "REDLOGO LIFESTYLE INC.", "RET-GENERAL MERCHANDISE" );
 INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "25067-NAGA RAC LINE COMMERCIAL", "E. ANGELES ST., DINAGA, NAGA CITY", "DINAGA", "KAW, ALFONSO NG", "RET-GENERAL MERCHANDISE" );
 INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "20284-LUCKYLI MARKETING", "GENERAL LUNA ST., DINAGA, NGAA CITY", "DINAGA", "LOBRIQUE, MARK ANGELO REVILLO", "RET-GENERAL MERCHANDISE" );
@@ -7174,7 +7184,7 @@ INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplie
 INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "21530-BETH & ZHAR EATERY", "ZONE 4, SAN FRANCISCO, NAGA CITY", "SAN FRANCISCO", "SAN BUENAVENTURA, JOVITA SABALBORO", "RET-SARI-SARI" );
 INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "26994-", "TALIPAPA, SAN ISIDRO, NAGA CITY", "SAN ISIDRO", "DE QUIROS, LYDIA NACARIO", "RET-SARI-SARI" );
 INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "26997", "ZONE 3 SAN ISIDRO, NAGA CITY", "SAN ISIDRO", "AREVALO, MARILYN FELIN", "RET-SARI-SARI" );
-INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "27012-PANDE PAULA", "S STORE"", "208 ZONE 3, SAN ISIDRO, NAGA CITY", "SAN ISIDRO", "SIEGA, MARIA CELESTE JORNALES" );
+INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "27012-PANDE PAULA", "S STORE", "208 ZONE 3, SAN ISIDRO, NAGA CITY", "SAN ISIDRO", "SIEGA, MARIA CELESTE JORNALES" );
 INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "27019-", "ZONE 4, SAN ISIDRO, NAGA CITY", "SAN ISIDRO", "FELIN, ABJANDO R.", "RET-SARI-SARI" );
 INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "27028-", "ZONE 1, SAN ISIDRO, NAGA CITY", "SAN ISIDRO", "PANGANIBAN, SOLEDAD CUELA", "RET-SARI-SARI" );
 INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplier_proprietor, supplier_nature) values( "17090-ROSAS GONZALES STORE", "ZONE 3 SAN ISIDRO, NAGA CITY", "SAN ISIDRO", "GONZALES, ROSAS FELIN", "RET-SARI-SARI" );
@@ -8552,76 +8562,34 @@ INSERT INTO supplier(supplier_name, supplier_address, supplier_barangay, supplie
 /*=============================================== */
 /*============== list of offices ============== */
 /*=============================================== */
-INSERT INTO offices(office_name, office_department, office_code) values( 'City Mayor\'s Office', 'CMO', '1011' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'CMO-Managesment of Sports Activities', 'CMO-Sports', '1011-1' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'CMO-Procurement Office & Service BAC', 'CPO', '1011-2' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'CMO-City Events Protocol & Public Information Office', 'CEPPIO', '1011-3' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'Office of the Administrations ', 'OCA-Main', '1031' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'OCA-JMR Good Governance', 'JMRCGI', '1031-1' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'OCA-I Gov', 'I-GOV', '1031-2' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'OCA-I Serve', 'I-SERVE', '1031-3' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'OCA-Building Maintenance Office ', 'BMO', '1031-4' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'OCA-Arts, Culture & Tourism Office ', '', '' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'OCA-City Publication Office ', 'PUPCOM', '1031-6' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'OCA- CPMRCO', 'CPMRFO', '1031-7' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'Lingkod Barangay Office', 'LBO', '1014' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'Sangguniang Panglungsod Office', 'SPO', '1021' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'SPO-Phil. Councilor\'s League', 'SPO-PCL', '1021-1' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'City Planning and Development Office', 'CPDO', '1041' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'City Civil Registration Office', 'CCRO', '1051' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'City Budget Office', 'CBO', '1071' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'City Accounting Office', 'CAO', '1081' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'City Treasure\'s Office', 'CTO', '1091' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'City Assessor\'s Office', 'CASSO', '1101' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'Information Technology Office', 'EDP', '1121' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'Raul S. Roco Library', 'RSRL', '1122' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'Education, Scholarship & Sports Office', '', '' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'ESSP-Sports', 'ESSO-Sports', '3311-1' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'ESSO-Iskolar Kan Ciudad Program', 'ESSO-ISKOLAR', '3311-2' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'City Legal Office', 'CLO', '1131' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'Bicol Science and Technology Centrum', 'BSTC', '3399' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'City Health Office', 'CHO', '4411' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'CHO-Naga City AIDs Council', 'CHO-AIDS', '4411-1' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'CHO-Local Health Board', 'CHO-Health Board', '4411-2' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'CHO-City College of Naga', 'CHO-COLLEGE', '4411-3' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'CHO-City Infirmary', 'CHO-INFIRMARY', '4411-4' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'Naga City Hospital', 'NCH', '4421' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'City Social Welfare & Development Office', 'CSWDO', '7611' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'CSWDO-SANGGAWADAN', 'CSWDO-Sanggawadan', '7611-1' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'CSWDO-Paskuhan sa Barangay', 'CSWDO-PASKUHAN', '7611-2' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'CSWDO-School For Early Education', 'CSWDO-SEED', '7611-3' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'CSWD0-Naga City Children\'s Home', 'CSWDO-NCCH', '7611-4' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'Housing Settlement & Development Office', 'HSDO', '6542' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'HSDO-Urban Development', 'HSDO-URBAN DEV', '6542-1' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'HSDO-Bayanihan Program Fund', 'HSDO-BAYADNIHAN', '6542-2' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'HSDO-Urban Poor Federation', 'HSD0-URBA POOR FED', '6542-3' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'City Population & Nutrition Office', 'CPNO', '7621' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'M-Public Employment Service Office', 'M-PESO', '8872' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'M-PESO-SPES Program', 'M-PESO-SPES', '8872-1' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'M-PESO Community Based Employment', 'M-PESO COMMUNITY BASED', '8872-2' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'M-PESO Angat Kabuhayan', 'M-PESO-ANGAT', '8872-3' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'M-PESO Manpower Skills Development', 'M-PESO-MANPOWER', '8872-4' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'M-PESO Local/Overseas Job Fair', 'M-PESO -LOCAL.OVERSEAS', '8872-5' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'M-PESO Creative Industries Development', 'M-PESO Creative Ind.', '8872-6' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'M-PESO-Entrepreneural Management Employment Coop', 'M-PESO-ENTREP', '8872-7' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'City Human Resource & Management Office', 'CHRMO', '1032' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'General Services Office', 'GSO', '1061' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'Public Safety Office', 'PSO', '1181' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'City Agriculture Office', 'CAGO', '8711' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'CAGO-Agriculture/Fishery', 'CAGO-FISHERY', '8711-1' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'City Environment & Natural Resources', 'CENRO', '8731' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'City Engineers Office', 'CEO', '8751' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'Market Enterprise & Promotion Office', 'MEPO', '8811' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'Naga City Abattoir', 'NCA', '8812' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'Investment Trade Promotion Office', 'ITPO', '8853' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'ITPO-Marketing Support Services', 'ITPO_Mktg Services', '8853-1' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'ITPO-Investment Promotion Support', 'ITPO-INV. Promotion', '8853-2' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'Bicol Central Station', 'BCS', '8821' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'City Disaster Management Office', 'NCDRRM', '' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'NCSFF', '', '7999' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'Resource Center for the Blinds', 'RCB', '7999-2' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'SEF/QUEEN', '', '3392-1' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'City Prosecutor\'S Office', '', '1141-1' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'PLEB', '', '1131-1' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'PDAO', '', '7999-5' );
-INSERT INTO offices(office_name, office_department, office_code) values( 'LDRRMC', '', '9940-2' );
+INSERT INTO offices(office_name, office_department, office_code, office_head) values( 'City Mayor\'s Office', 'CMO', '1011', 'Juan de la Cruz');
+INSERT INTO offices(office_name, office_department, office_code, office_head) values( 'CMO-Managesment of Sports Activities', 'CMO-Sports', '1011-1', 'John Co');
+INSERT INTO offices(office_name, office_department, office_code, office_head) values( 'CMO-Procurement Office & Service BAC', 'CPO', '1011-2', 'James Valdez');
+INSERT INTO offices(office_name, office_department, office_code, office_head) values( 'CMO-City Events Protocol & Public Information Office', 'CEPPIO', '1011-3', 'Joshua Sy');
+INSERT INTO offices(office_name, office_department, office_code, office_head) values( 'Office of the Administrations ', 'OCA-Main', '1031', 'Katherine Joy');
+INSERT INTO offices(office_name, office_department, office_code, office_head) values( 'OCA-JMR Good Governance', 'JMRCGI', '1031-1', 'Reinalyn Joy');
+INSERT INTO offices(office_name, office_department, office_code, office_head) values( 'OCA-I Gov', 'I-GOV', '1031-2', 'Nico Astor');
+INSERT INTO offices(office_name, office_department, office_code, office_head) values( 'OCA-I Serve', 'I-SERVE', '1031-3', 'Samwell Turley');
+INSERT INTO offices(office_name, office_department, office_code, office_head) values( 'OCA-Building Maintenance Office ', 'BMO', '1031-4', 'Rodete Mae');
+INSERT INTO offices(office_name, office_department, office_code, office_head) values( 'OCA-Arts, Culture & Tourism Office ', '', '1031-5', 'Rozcelet Blanco');
+INSERT INTO offices(office_name, office_department, office_code, office_head) values( 'OCA-City Publication Office ', 'PUPCOM', '1031-6', 'Shara Mae Yu');
+INSERT INTO offices(office_name, office_department, office_code, office_head) values( 'OCA- CPMRCO', 'CPMRFO', '1031-7', 'Burt Co');
+INSERT INTO offices(office_name, office_department, office_code, office_head) values( 'Lingkod Barangay Office', 'LBO', '1014', 'Fredirick Pinto');
+INSERT INTO offices(office_name, office_department, office_code, office_head) values( 'Sangguniang Panglungsod Office', 'SPO', '1021', 'Adrian Javier');
+INSERT INTO offices(office_name, office_department, office_code, office_head) values( 'SPO-Phil. Councilor\'s League', 'SPO-PCL', '1021-1', 'Glaiza Mae');
+INSERT INTO offices(office_name, office_department, office_code, office_head) values( 'City Planning and Development Office', 'CPDO', '1041', 'Juvy Valder');
+INSERT INTO offices(office_name, office_department, office_code, office_head) values( 'City Civil Registration Office', 'CCRO', '1051', 'Cristine Salem');
+INSERT INTO offices(office_name, office_department, office_code, office_head) values( 'City Budget Office', 'CBO', '1071', 'Javier Luansing');
+INSERT INTO offices(office_name, office_department, office_code, office_head) values( 'City Accounting Office', 'CAO', '1081', 'Martha Putong');
+
+
+/*=============================================== */
+/*============== list of ITEMS ============== */
+/*=============================================== */
+INSERT INTO  ITEMS VALUES('item1', 'Cement', 'bag', '', 230);
+INSERT INTO  ITEMS VALUES('item2', 'Flat Latex Paint', 'liter', '', 500);
+INSERT INTO  ITEMS VALUES('item3', 'Gloss Paint', 'liter', '', 590);
+INSERT INTO  ITEMS VALUES('item4', 'Flatwall Enamel Paint', 'liter', '', 500);
+INSERT INTO  ITEMS VALUES('item5', 'QDE Paint', 'liter', '', 600);
+INSERT INTO  ITEMS VALUES('item6', '4" Hollow Blocks', 'inch', '', 14);
+INSERT INTO  ITEMS VALUES('item7', '6" Hollow Blocks', 'inch', '', 17);

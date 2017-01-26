@@ -1,20 +1,15 @@
 <?php
 /* Attempt MySQL server connection. Assuming you are running MySQL
 server with default setting (user 'root' with no password) */
-$link = mysqli_connect("localhost", "root", "", "pms");
- 
-// Check connection
-if($link === false){
-    die("ERROR: Could not connect. " . mysqli_connect_error());
-}
+require("../connection.php");
  
 // Escape user inputs for security
-$query = mysqli_real_escape_string($link, $_REQUEST['query']);
+$query = mysqli_real_escape_string($conn, $_REQUEST['query']);
  
 if(isset($query)){
     // Attempt select query execution
     $sql = "SELECT * FROM supplier WHERE supplier_name LIKE '%" . $query . "%' LIMIT 10";
-    if($result = mysqli_query($link, $sql)){
+    if($result = mysqli_query($conn, $sql)){
         if(mysqli_num_rows($result) > 0){
             while($row = mysqli_fetch_array($result)){
                 echo  "<p>" . $row['supplier_name'] . "</p>";
@@ -25,10 +20,10 @@ if(isset($query)){
             echo "<p>No matches found for <b>$query</b></p>";
         }
     } else{
-        echo "ERROR: Could not able to execute $sql. " . mysqli_error($link);
+        echo "ERROR: Could not able to execute $sql. " . mysqli_error($conn);
     }
 }
  
 // close connection
-mysqli_close($link);
+mysqli_close($conn);
 ?>

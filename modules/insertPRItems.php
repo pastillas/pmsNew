@@ -10,7 +10,7 @@
 
 	if(!mysqli_query($conn, $sql)){
 		return 'ERROR';
-	}else{
+	}else
 		return 'SUCCESS';
-	}
+	
 ?>

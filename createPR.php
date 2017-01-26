@@ -35,15 +35,15 @@
               <label for="Date">PR Date</label>
             </div>
             <div class="input-field col s12">
-              <input placeholder="Department" name="pr_department" id="Department" type="text" class="validate" required="true">
+              <input  name="pr_department" id="Department" type="text" class="validate" required="true">
               <label for="Department">Department</label>
             </div>
             <div class="input-field col s12">
-              <input placeholder="Division/Section" name="pr_dev_section" id="Division_Section" type="text" class="validate" required="true">
+              <input  name="pr_dev_section" id="Division_Section" type="text" class="validate" required="true">
               <label for="Division_Section">Division/Section</label>
             </div>
            <div class="input-field col s12">
-              <input placeholder="Purpose" name="pr_purpose" id="Purpose" type="text" class="validate" required="true">
+              <input name="pr_purpose" id="Purpose" type="text" class="validate" required="true">
               <label for="Purpose">Purpose</label>
             </div>
 
@@ -62,19 +62,19 @@
               <label for="Requestor">Requesting Officer</label>
             </div>
             <div class="input-field col s6">
-              <input placeholder="SAI Number" name="pr_sai_number" id="SAI_Number" type="number" class="validate">
+              <input name="pr_sai_number" id="SAI_Number" type="number" class="validate">
               <label for="SAI_Number">SAI Number</label>
             </div>
             <div class="input-field col s6">
-              <input placeholder="SAI Date" name="pr_sai_date" id="Date_SAI" type="date" class="datepicker">
+              <input name="pr_sai_date" id="Date_SAI" type="date" class="datepicker">
               <label for="Date_SAI">SAI Date</label>
             </div>
             <div class="input-field col s6">
-              <input placeholder="Placeholder" name="pr_obr_number" id="OBR_Number" type="number" class="validate">
+              <input name="pr_obr_number" id="OBR_Number" type="number" class="validate">
               <label for="OBR_Number">OBR Number</label>
             </div>
             <div class="input-field col s6">
-              <input placeholder="OBR Date" name="pr_obr_date" id="Date_OBR" type="date" class="datepicker">
+              <input  name="pr_obr_date" id="Date_OBR" type="date" class="datepicker">
               <label for="Date_OBR">OBR Date</label>
             </div>
           </div>
@@ -113,7 +113,6 @@
 
     <div class="col s10 offset-s2">
       <a href="pendingPR.php" class="waves-effect waves-light btn">CANCEL</a>
-      <a class="waves-effect waves-light btn">RESET</a>
       <button type="submit" form="createPRForm" id="createPRSubmit" name="createPRSubmit" class="waves-effect waves-light btn">CREATE PR</button>
     </div>
   </div>
@@ -121,39 +120,51 @@
 </div>
   
   <p id="p"></p>
-<div id="modal1" class="modal modal-fixed-footer">
+<div id="modal1" class="modal modal-fixed-footer" >
   <div class="modal-content">
-    <h4>SELECT PR ITEMS</h4>
-    <div >
-      <form method="POST" id="addItemForm" onsubmit="return addPRItems()">
-        <table id="datatable">
-        <thead>
-          <tr>
-            <th>Select Items</th>
-            <th>Description</th>
-            <th>Unit Measure</th>
-            <th>Estimated Unit Cost</th>
-            <th>Quantity</th>
-          </tr>
-        </thead>
-        <tbody id="tbody">
-          <?php
-            $sql = 'SELECT * FROM items';
-            $items =  mysqli_query($conn, $sql);
 
-            while(($row = mysqli_fetch_assoc($items)) != null){
-              echo '<tr>' .
-                '<td><input type="checkbox" onclick="addSellectedItems('  . "'" . $row['item_code'] .  "'" . ')" id="' . $row['item_code'] . '" /> <label for="' . $row['item_code'] . '">'. $row['item_code'] . '</label></td> '.
-                '<td id="idc' . $row['item_code'] . '">' . $row['item_description'] . '</td>' .
-                '<td id="iu' . $row['item_code'] . '">' . $row['item_unit_measure'] . '</td>' .
-                '<td ><input type="number" step=any class="active" required placeholder="E.U.C" name="euc" id="euc' . $row['item_code'] . '" value=' . $row['item_euc'] . ' disabled></td>' .
-                '<td ><input type="number" class="active" required placeholder="Quantity" name="quantity" id="quantity' . $row['item_code'] .   '" disabled></td>'.
-                '</tr>';
-            }
-          ?>
-        </tbody>
-      </table>
-      </form>
+    <div class="row">
+      <div id="admin" class="col s12">
+        <div class="card material-table">
+          <div class="table-header">
+            <span class="table-title">SELECT PR ITEMS</span>
+            <div class="actions">
+              <a href="#" class="search-toggle waves-effect waves-light btn-flat nopadding"><i class="material-icons">search</i></a>
+            </div>
+          </div>
+
+          <form method="POST" id="addItemForm" onsubmit="return addPRItems()">
+            <table id="datatable">
+
+              <thead>
+                <tr>
+                  <th>Select Items</th>
+                  <th>Description</th>
+                  <th>Unit Measure</th>
+                  <th>Estimated Unit Cost</th>
+                  <th>Quantity</th>
+                </tr>
+              </thead>
+              <tbody id="tbody">
+                <?php
+                  $sql = 'SELECT * FROM items';
+                  $items =  mysqli_query($conn, $sql);
+
+                  while(($row = mysqli_fetch_assoc($items)) != null){
+                    echo '<tr>' .
+                      '<td><input type="checkbox" onclick="addSellectedItems('  . "'" . $row['item_code'] .  "'" . ')" id="' . $row['item_code'] . '" /> <label for="' . $row['item_code'] . '">'. $row['item_code'] . '</label></td> '.
+                      '<td id="idc' . $row['item_code'] . '">' . $row['item_description'] . '</td>' .
+                      '<td id="iu' . $row['item_code'] . '">' . $row['item_unit_measure'] . '</td>' .
+                      '<td ><input type="number" step=any class="active" required placeholder="E.U.C" name="euc" id="euc' . $row['item_code'] . '" value=' . $row['item_euc'] . ' disabled></td>' .
+                      '<td ><input type="number" class="active" required placeholder="Quantity" name="quantity" id="quantity' . $row['item_code'] .   '" disabled></td>'.
+                      '</tr>';
+                  }
+                ?>
+              </tbody>
+            </table>
+          </form>
+        </div>
+      </div>
     </div>
   </div>
   <div class="modal-footer">

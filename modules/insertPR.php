@@ -37,6 +37,13 @@
 	
 	if(!mysqli_query($conn, $sql))
 		return 'ERROR';
-	else
-		return 'SUCCESS';
+	else{
+		$sql = "INSERT INTO PR_PO_STATUS(for_payment, pr_number) values(FALSE, $pr_number)";
+		if(!mysqli_query($conn, $sql)){
+			return 'ERROR';
+		}else{
+			return 'SUCCESS';
+		}
+	}
+
 ?>
