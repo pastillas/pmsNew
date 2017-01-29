@@ -14,8 +14,8 @@
   <link rel="stylesheet" type="text/css" href="css/datatable.css">
   <?php require("connection.php");
 
-    //if(!isset($_POST['pr_po_status_id']))
-      //header('Location: pendingPR.php' );
+    if(!isset($_POST['pr_po_status_id']))
+      header('Location: pendingPR.php' );
 
     $pr_po_status_id = $_POST['pr_po_status_id'];
     $sql = 'SELECT * FROM pr_po_status ps, purchase_request pr, offices o WHERE ps.pr_po_status_id = ' . $pr_po_status_id . ' AND  ps.pr_number = pr.pr_number AND ps.for_payment = 0 AND pr.office_code = o.office_code ;';
@@ -37,7 +37,6 @@
 </script>
 <body>
   <!--Navs-->
- 
  
 <h4 class="center-align">EDIT PURCHASE REQUEST</h4>
   <div class="container">
@@ -170,11 +169,26 @@
         <div class="col s10 offset-s2">
           <button type="submit" form="createPRForm" id="createPRSubmit" name="createPRSubmit" class="waves-effect waves-light btn">SAVE</button>
           <a href="#" class="waves-effect waves-light btn">DELETE</a>
-          <a href="#" class="waves-effect waves-light btn" style="margin-top:5px;">CREATE PURCHASE ORDER</a>
+
+          <?php 
+            if($pr_po_status['po_number'] == null) 
+              echo '<button type="submit" form="createPOForm" id="createPOSubmit" name="createPOSubmit" class="waves-effect waves-light btn">CREATE PURCHASE ORDER</button>';
+            else 
+              '<button type="submit" form="viewPOForm" id="viewPOSubmit" name="viewPOSubmit" class="waves-effect waves-light btn">VIEW PURCHASE ORDER</button>';
+          ?>
+          
         </div>
       </div>
     </div>
   </div>
+
+<form action="createPO.php" method="POST" name="createPOForm" id="createPOForm">
+  <input type="hidden" name="pr_po_status_id" value="<?php echo $pr_po_status_id?>">
+  <input type="hidden" name="pr_number" value="<?php echo $pr_po_status['pr_number']?>">
+</form>
+<form action="PO.php" method="POST" name="viewPOForm" id="viewPOForm">
+  <input type="hidden" name="pr_po_status_id" value="<?php echo $pr_po_status_id?>">
+</form>
 
 <p id="p"></p>
 <div id="modal1" class="modal modal-fixed-footer" >
@@ -250,6 +264,11 @@
     <button type="submit" form="addItemForm" id="addItemSubmit" name="addItemSubmit" class="waves-effect waves-light btn-flat">Save Changes</button>
     <p id="bugtak"></p>
   </div>
+
+
+  <form action="PR.php" method="POST" id="prForm">
+    <input type="hidden" name="pr_po_status_id" value="<?php echo $pr_po_status_id?>">
+  </form>
 
   <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script src="js/materialize.js"></script>
@@ -378,11 +397,11 @@
                             data: 'pr_number=' + pr_number + '&item_code=' + selectedItems[i] + '&pr_item_euc=' + pr_item_euc + '&quantity=' + quantity,
                             success: function(strMessage){
                               //window.location = "http://localhost/pmsNew/pendingPR.php";
-                              document.getElementById('p').innerHTML = strMessage;
-                              alert(selectedItems);
+                              
                             }
                           });
                         }
+                        Materialize.toast('Changes Saved.', 3000, 'rounded');
                     }
                   }
                 });
