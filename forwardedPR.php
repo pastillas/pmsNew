@@ -12,14 +12,18 @@
   <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
   <link href="css/items.css" type="text/css" rel="stylesheet" media="screen,projection"/>
   <link rel="stylesheet" type="text/css" href="css/datatable.css">
-
+  <style type="text/css">
+  .side-nav li {
+    padding: 0 !important;
+  }
+  </style>
 </head>
 <body>
 
 <!--Navs-->
 <?php 
-//include("navbar.php");
-//include("sidebar.php");
+require("navbar.php");
+require("sidebar.php");
 
  require("connection.php");
     if(isset($_POST['statusFormSubmit'])){
@@ -34,7 +38,7 @@
     }
 ?>
   <div class="row">
-  <div id="admin" class="col s12">
+  <div id="admin" style="margin: 102px 30px 30px 330px; width: 79%;">
     <div class="card material-table">
       <div class="table-header">
         <span class="table-title">For Paymemt Purchase Orders</span>

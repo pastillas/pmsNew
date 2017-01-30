@@ -15,10 +15,8 @@
 
 <!--Navs-->
 <?php 
-include("navbar.php");
-?>
-<?php 
-include("sidebar.php");
+    require("navbar.php");
+    require("sidebar.php");
 ?>
 
 <!--Calender-->
