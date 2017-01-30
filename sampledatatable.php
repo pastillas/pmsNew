@@ -500,7 +500,7 @@
   </div>
 </div>
 
-	<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+	<script src="js/jquery-2.1.1.min.js"></script>
 	<script src='http://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js'></script>
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.0/js/materialize.min.js'></script>
     <script src="js/datatable.js"></script>

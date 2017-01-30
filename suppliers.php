@@ -13,8 +13,15 @@
   <link href="css/items.css" type="text/css" rel="stylesheet" media="screen,projection"/>
   <link rel="stylesheet" type="text/css" href="css/datatable.css">
   <style type="text/css">
-  .side-nav li {
+  .side-nav li, 
+  .side-nav .collapsible-header,
+  .side-nav.fixed .collapsible-header,
+  .side-nav .collapsible-body li a,
+  .side-nav.fixed .collapsible-body li a {
     padding: 0 !important;
+  }
+  .side-nav li.userView:hover{
+    background: none !important;
   }
   </style>
   <?php
@@ -111,7 +118,8 @@
 
 
 <div class="row">
-  <div id="admin" style="margin: 102px 30px 30px 330px; width: 79%;">
+  <div id="admin" style="margin: 102px 30px 30px 330px; width: 76.5%;">
+
     <div class="card material-table">
       <div class="table-header">
         <span class="table-title">Suppliers</span>
@@ -155,7 +163,7 @@
   </div>
 </div>
 
-	<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+	<script src="js/jquery-2.1.1.min.js"></script>
 	<script src="js/materialize.js"></script>
 	<script src='http://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js'></script>
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.0/js/materialize.min.js'></script>
@@ -167,6 +175,13 @@
     // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
     $('.modal').modal();
   });
+    $('.button-collapse').sideNav({
+      menuWidth: 300, // Default is 240
+      edge: 'left', // Choose the horizontal origin
+      closeOnClick: false, // Closes side-nav on <a> clicks, useful for Angular/Meteor
+      draggable: true // Choose whether you can drag to open on touch screens
+    }
+  );
 
   function editSupplier(supplier_pk){
   	var supplier_name = document.getElementById("sn"+supplier_pk).innerHTML;

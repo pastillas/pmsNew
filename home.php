@@ -64,7 +64,7 @@ include("calendar.php");
 -->
 
   <!--  Scripts-->
-  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="js/jquery-2.1.1.min.js"></script>
   <script src="js/materialize.js"></script>
   <script src="js/init.js"></script>
 <script type="text/javascript">
@@ -72,7 +72,7 @@ include("calendar.php");
   $('.button-collapse').sideNav({
       menuWidth: 300, // Default is 240
       edge: 'left', // Choose the horizontal origin
-      closeOnClick: true, // Closes side-nav on <a> clicks, useful for Angular/Meteor
+      closeOnClick: false, // Closes side-nav on <a> clicks, useful for Angular/Meteor
       draggable: true // Choose whether you can drag to open on touch screens
     }
   );

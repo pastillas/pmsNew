@@ -13,7 +13,8 @@
   <link href="css/createPO.css" type="text/css" rel="stylesheet" media="screen,projection"/>
   <link href="css/sidenav.css" type="text/css" rel="stylesheet" media="screen,projection"/>
   <link rel="stylesheet" type="text/css" href="css/datatable.css">
-  <?php require("connection.php");?>
+  <?php require("connection.php");
+  require ('navbar.php');?>
 </head>
 <body>
 
@@ -85,12 +86,10 @@
   </div>
 
   <div class="col s7">
-  <table>
-    <tr>
-      <td><h5>PR ITEMS</h5></td>
-      <td><button onclick="openModal()" class="btn waves-effect waves-light teal" id="addCPR"><i class="material-icons">add</i></button> </td>
-    </tr>
-  </table>
+  <div class="row">
+    <div class="col s10"><h5>PR ITEMS</h5></div>
+    <div class="col s2"><button onclick="openModal()" class="btn waves-effect waves-light teal" id="addCPR"><i class="material-icons">add</i></button></div>
+  </div>
 
     <table class="striped">
       <thead>
@@ -111,7 +110,7 @@
       </tbody>
     </table>
 
-    <div class="col s10 offset-s2">
+    <div class="col s9 offset-s3" style="margin-top:20px;">
       <a href="pendingPR.php" class="waves-effect waves-light btn">CANCEL</a>
       <button type="submit" form="createPRForm" id="createPRSubmit" name="createPRSubmit" class="waves-effect waves-light btn">CREATE PR</button>
     </div>
@@ -120,7 +119,7 @@
 </div>
   
   <p id="p"></p>
-<div id="modal1" class="modal modal-fixed-footer" >
+<div id="modal1" class="modal modal-fixed-footer" style="width: 70% !important;" >
   <div class="modal-content">
 
     <div class="row">
@@ -176,7 +175,7 @@
 </div>
 
   <!--  Scripts-->
-  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="js/jquery-2.1.1.min.js"></script>
   <script src="js/materialize.js"></script>
   <script src='http://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js'></script>
   <script src='https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.0/js/materialize.min.js'></script>
@@ -207,7 +206,16 @@
    $(document).ready(function() {
     $('select').material_select();
   });
-
+  $('.dropdown-button').dropdown({
+      inDuration: 300,
+      outDuration: 225,
+      constrain_width: false, // Does not change width of dropdown to that of the activator
+      hover: true, // Activate on hover
+      gutter: 0, // Spacing from edge
+      belowOrigin: true, // Displays dropdown below the button
+      alignment: 'left' // Displays dropdown with edge aligned to the left of button
+    }
+  );
   var selectedItems = [];
 
   function addSellectedItems( item_code ){

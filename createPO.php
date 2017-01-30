@@ -47,6 +47,7 @@
 </style>
 
   <?php require('connection.php');
+  require('navbar.php');
     if(!isset($_POST['pr_po_status_id'])){
       header('Location: pendingPR.php');
     }
@@ -168,7 +169,7 @@
           </tr>
         </tbody>
       </table>
-      <div class="col s10 offset-s2">
+    <div class="col s9 offset-s3" style="margin-top:20px;">
         <a href="pendingPR.php" class="waves-effect waves-light btn">CANCEL</a>
         <button type="submit" form="createPOForm" id="createPOSubmit" name="createPOSubmit" class="waves-effect waves-light btn">CREATE PO</button>
       </div>
@@ -178,7 +179,7 @@
 
 
   <!--  Scripts-->
-  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="js/jquery-2.1.1.min.js"></script>
   <script src="js/materialize.js"></script>
   <script src="js/moment.js"></script>
  
@@ -196,7 +197,16 @@
       draggable: true // Choose whether you can drag to open on touch screens
     }
   );
-
+  $('.dropdown-button').dropdown({
+      inDuration: 300,
+      outDuration: 225,
+      constrain_width: false, // Does not change width of dropdown to that of the activator
+      hover: true, // Activate on hover
+      gutter: 0, // Spacing from edge
+      belowOrigin: true, // Displays dropdown below the button
+      alignment: 'left' // Displays dropdown with edge aligned to the left of button
+    }
+  );
   var supplier_name = "";
   var supplier_pk = "";
 
