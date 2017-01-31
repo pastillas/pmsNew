@@ -12,20 +12,23 @@
   <link href="css/createPO.css" type="text/css" rel="stylesheet" media="screen,projection"/>
   <link href="css/sidenav.css" type="text/css" rel="stylesheet" media="screen,projection"/>
   <link rel="stylesheet" type="text/css" href="css/datatable.css">
+
   <?php require("connection.php");
 
     if(!isset($_POST['pr_po_status_id']))
       header('Location: pendingPR.php' );
 
     $pr_po_status_id = $_POST['pr_po_status_id'];
-    $sql = 'SELECT * FROM pr_po_status ps, purchase_request pr, offices o WHERE ps.pr_po_status_id = ' . $pr_po_status_id . ' AND  ps.pr_number = pr.pr_number AND ps.for_payment = 0 AND pr.office_code = o.office_code ;';
+    $sql = 'SELECT * FROM pr_po_status ps, purchase_request pr, offices o WHERE ps.pr_po_status_id = ' . $pr_po_status_id . ' AND  ps.pr_number = pr.pr_number AND ps.for_payment = 2 AND pr.office_code = o.office_code ;';
     
     $query  = mysqli_query($conn, $sql);
     $pr_po_status = mysqli_fetch_assoc($query);
+    //echo $sql;
 
     $purhcase_order = array('po_number' => 'N/A', 'po_date' => 'N/A');
     if($pr_po_status['po_number'] != null){
-      $sql = 'SELECT po_number, po_date FROM purhcase_order WHERE po_number = ' . $pr_po_status . ';';
+      $sql = 'SELECT po_number, po_date FROM purchase_order WHERE po_number = ' . $pr_po_status['po_number'] . ';';
+
       $query  = mysqli_query($conn, $sql);
       $purhcase_order = mysqli_fetch_assoc($query);
     }
@@ -38,7 +41,7 @@
 <body>
   <!--Navs-->
  
-<h4 class="center-align">EDIT PURCHASE REQUEST</h4>
+<h4 class="center-align">VIEW/EDIT PURCHASE REQUEST</h4>
   <div class="container">
     <div class="row">
       <div class="col s5">
@@ -142,6 +145,8 @@
       <tbody id="tbodyitems">
         <?php 
             $sql = ' select * from items i left outer join purchase_request_items pi ON i.item_code = pi.item_code WHERE pi.pr_number = ' . $pr_po_status['pr_number'] . ';';
+
+            //echo '<tr><td colspan="4">' . $sql . '</td></tr>';
             $pr_items = mysqli_query($conn, $sql);
             $total = 0;
 
@@ -174,7 +179,7 @@
             if($pr_po_status['po_number'] == null) 
               echo '<button type="submit" form="createPOForm" id="createPOSubmit" name="createPOSubmit" class="waves-effect waves-light btn">CREATE PURCHASE ORDER</button>';
             else 
-              '<button type="submit" form="viewPOForm" id="viewPOSubmit" name="viewPOSubmit" class="waves-effect waves-light btn">VIEW PURCHASE ORDER</button>';
+              echo '<button type="submit" form="viewPOForm" id="viewPOSubmit" name="viewPOSubmit" class="waves-effect waves-light btn">VIEW PURCHASE ORDER</button>';
           ?>
           
         </div>

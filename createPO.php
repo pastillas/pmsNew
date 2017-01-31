@@ -44,6 +44,8 @@
     .result p:hover{
         background: #f2f2f2;
     }
+</style>
+
   <?php require('connection.php');
     if(!isset($_POST['pr_po_status_id'])){
       header('Location: pendingPR.php');
@@ -53,7 +55,6 @@
     $pr_number = $_POST['pr_number'];
 
   ?>
-</style>
 </head>
 <body>
 
@@ -66,7 +67,6 @@
       <div class="card-panel">
         <div class="row">
 
-<p id="query">asdasdadsdasd</p>
           <form class="col s12" class="col s12" name="createPOForm" action="pendingPR.php" method="POST" onsubmit="return validatePO()" id="createPOForm">
             <div class="row">
 
@@ -264,7 +264,7 @@
         data: $('form').serialize(),
         datatype: "text",
         success: function(strMessage){
-            document.getElementById('query').innerHTML = strMessage;
+            //document.getElementById('query').innerHTML = strMessage;
             window.location = "http://localhost/pmsNew/pendingPR.php";
         }
       });

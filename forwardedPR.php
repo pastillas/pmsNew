@@ -3,196 +3,110 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
-  <title>Parallax Template - Materialize</title>
+  <title>Forwarded PRs</title>
 
   <!-- CSS  -->
+  <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.0/css/materialize.min.css'>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
   <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
   <link href="css/items.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link rel="stylesheet" type="text/css" href="css/datatable.css">
 
 </head>
-<style type="text/css">
-td.po, th.pr,
-td.pr, th.po{
-  width: 10%;
-}
-</style>
 <body>
 
 <!--Navs-->
 <?php 
-include("navbar.php");
-?>
-<?php 
-include("sidebar.php");
-?>
-<!--style="margin-left: 300px; padding: 90px 70px 20px 70px; --------------- PARA SA PO
-	style="margin-left: 300px; padding: 0 20px;" --------------------------- PARA SA PR-->
-  <div class="forwarded" >
-    
+//include("navbar.php");
+//include("sidebar.php");
 
-    <h4 style="margin-bottom: 0;">For Payment Purchase Orders</h4>
+ require("connection.php");
+    if(isset($_POST['statusFormSubmit'])){
+      $status = $_POST['group1'];
+      $pr_po_status_id = $_POST['pr_po_status_id'];
 
-      <div class="input-field">
-        <input id="search" type="search" required>
-        <label for="search"><i class="material-icons">search</i></label>
-        <i class="material-icons">close</i>
+      $sql = 'UPDATE PR_PO_STATUS SET status = \'' . $status . '\' WHERE pr_po_status_id = ' . $pr_po_status_id . ';';
+      if(mysqli_query($conn, $sql)){
+        echo '<script type="text/javascript">Materialize.toast("SUCCESS. Thank you!", 3000, "rounded");</script>';
+      }else
+        echo '<script type="text/javascript">Materialize.toast("ERROR Saving Record.", 3000, "rounded");</script>';
+    }
+?>
+  <div class="row">
+  <div id="admin" class="col s12">
+    <div class="card material-table">
+      <div class="table-header">
+        <span class="table-title">For Paymemt Purchase Orders</span>
+        <div class="actions">
+          <a href="#" class="search-toggle waves-effect waves-light btn-flat nopadding"><i class="material-icons">search</i></a>
+        </div>
       </div>
-    <div class="card-panel">
-      <table class="centered striped">
+      <table id="datatable">
         <thead>
           <tr>
             <th class="pr">PR No.</th>
             <th class="po">PO No.</th>
             <th>Requesting Office</th>
-            <th>Supplies</th>
-            <th>Date Forwarded</th>
-            <th>DTracks#</th>
-            </tr>
+            <th>Supplier</th>
+            <th>Delivery Date</th>
+            <th>Total Estimated Cost</th>
+            <th>Status</th>
+          </tr>
         </thead>
-
         <tbody>
-          <tr>
-            <td class="pr"><a href="PR.php">1918</a></td>
-            <td class="po"><a href="PO.php">12-0918</a></td>
-            <td>City Procurement Office</td>
-            <td>Bond Paper</td>
-            <td>January 24,2016</td>
-            <td>1029-30</td>
-          </tr>
-          <tr>
-            <td class="pr"><a href="PR.php">1918</a></td>
-            <td class="po"><a href="PO.php">12-0918</a></td>
-            <td>City Procurement Office</td>
-            <td>Bond Paper</td>
-            <td>January 24,2016</td>
-            <td>1029-30</td>
-          </tr>
-          <tr>
-            <td class="pr"><a href="PR.php">1918</a></td>
-            <td class="po"><a href="PO.php">12-0918</a></td>
-            <td>City Procurement Office</td>
-            <td>Bond Paper</td>
-            <td>January 24,2016</td>
-            <td>1029-30</td>
-          </tr>
-          <tr>
-            <td class="pr"><a href="PR.php">1918</a></td>
-            <td class="po"><a href="PO.php">12-0918</a></td>
-            <td>City Procurement Office</td>
-            <td>Bond Paper</td>
-            <td>January 24,2016</td>
-            <td>1029-30</td>
-          </tr>
-          <tr>
-            <td class="pr"><a href="PR.php">1918</a></td>
-            <td class="po"><a href="PO.php">12-0918</a></td>
-            <td>City Procurement Office</td>
-            <td>Bond Paper</td>
-            <td>January 24,2016</td>
-            <td>1029-30</td>
-          </tr>
-          <tr>
-            <td class="pr"><a href="PR.php">1918</a></td>
-            <td class="po"><a href="PO.php">12-0918</a></td>
-            <td>City Procurement Office</td>
-            <td>Bond Paper</td>
-            <td>January 24,2016</td>
-            <td>1029-30</td>
-          </tr>
-          <tr>
-            <td class="pr"><a href="PR.php">1918</a></td>
-            <td class="po"><a href="PO.php">12-0918</a></td>
-            <td>City Procurement Office</td>
-            <td>Bond Paper</td>
-            <td>January 24,2016</td>
-            <td>1029-30</td>
-          </tr>
-          <tr>
-            <td class="pr"><a href="PR.php">1918</a></td>
-            <td class="po"><a href="PO.php">12-0918</a></td>
-            <td>City Procurement Office</td>
-            <td>Bond Paper</td>
-            <td>January 24,2016</td>
-            <td>1029-30</td>
-          </tr>
-          <tr>
-            <td class="pr"><a href="PR.php">1918</a></td>
-            <td class="po"><a href="PO.php">12-0918</a></td>
-            <td>City Procurement Office</td>
-            <td>Bond Paper</td>
-            <td>January 24,2016</td>
-            <td>1029-30</td>
-          </tr>
-          <tr>
-            <td class="pr"><a href="PR.php">1918</a></td>
-            <td class="po"><a href="PO.php">12-0918</a></td>
-            <td>City Procurement Office</td>
-            <td>Bond Paper</td>
-            <td>January 24,2016</td>
-            <td>1029-30</td>
-          </tr>
-          <tr>
-            <td class="pr"><a href="PR.php">1918</a></td>
-            <td class="po"><a href="PO.php">12-0918</a></td>
-            <td>City Procurement Office</td>
-            <td>Bond Paper</td>
-            <td>January 24,2016</td>
-            <td>1029-30</td>
-          </tr>
-        </tbody>
-      </table> 
-    </div>
+        <?php
+          $sql = 'SELECT ps.pr_po_status_id as \'pr_po_status_id\', ps.pr_number as \'pr_number\', ps.po_number as \'po_number\', ps.for_payment as \'for_payment\', pr.office_code as \'office_code\', o.office_name as \'office_name\', ps.supplier_pk as \'supplier_pk\', ps.delivery_date as \'delivery_date\', ps.status as \'status\' FROM pr_po_status ps, purchase_request pr, offices o WHERE ps.pr_number = pr.pr_number AND ps.for_payment = 1 AND pr.office_code = o.office_code ;';
 
+          $query = mysqli_query($conn, $sql);
+          while(($row = mysqli_fetch_assoc($query)) != null){
+            echo '<tr>';
+              echo '<td class="pr" onclick=openPR(' . $row['pr_po_status_id'] . ')>' .  $row['pr_number'] . '</td>';
+
+              if($row['po_number'] == null){
+                echo '<td class="po" onclick=openPR(' . $row['pr_po_status_id'] . ')>N/A</td>';
+                echo '<td>' . $row['office_name'] . '</td>';
+                echo '<td>N/A</td>';
+                echo '<td>N/A</td>';
+              }
+              else{
+                echo '<td class="po" onclick=openPO(' . $row['pr_po_status_id'] . ')>' . $row['po_number'] . '</td>';
+                echo '<td>' . $row['office_name'] . '</td>';
+
+                $sql  = 'SELECT supplier_name WHERE supplier_pk = ' . $row['supplier_pk'] . ';';
+                $result = mysqli_query($conn, $sql);
+                $supplier_name = mysqli_fetch_array($result);
+                echo '<td>' . $supplier_name[0] . '</td>';
+                echo '<td>' . $row['delivery_date'] . '</td>';
+              }
+
+              $sql = ' select SUM(quantity * pr_item_euc) as \'total\' from purchase_request_items Where pr_number  = ' . $row['pr_number'] . ';';
+              $result = mysqli_query($conn, $sql);
+              $total = mysqli_fetch_array($result);
+
+              echo '<td>' . $total['total'] . '</td>';
+
+              if($row['status'] == null)
+                echo '<td onclick=openStatusModal(' . $row['pr_po_status_id'] . ')>N/A</td>';
+              else
+                echo '<td onclick=openStatusModal(' . $row['pr_po_status_id'] . ')>' . $row['status'] . '</td>';
+            echo '</tr>';
+          }
+        ?>
+        </tbody>
+      </table>
+    </div>
   </div>
+</div>
 
            
 
-
-<!--
-  <footer class="page-footer teal">
-
-    <div class="container">
-      <div class="row">
-        <div class="col l6 s12">
-          <h5 class="white-text">Company Bio</h5>
-          <p class="grey-text text-lighten-4">We are a team of college students working on this project like it's our full time job. Any amount would help support and continue development on this project and is greatly appreciated.</p>
-
-
-        </div>
-        <div class="col l3 s12">
-          <h5 class="white-text">Settings</h5>
-          <ul>
-            <li><a class="white-text" href="#!">Link 1</a></li>
-            <li><a class="white-text" href="#!">Link 2</a></li>
-            <li><a class="white-text" href="#!">Link 3</a></li>
-            <li><a class="white-text" href="#!">Link 4</a></li>
-          </ul>
-        </div>
-        <div class="col l3 s12">
-          <h5 class="white-text">Connect</h5>
-          <ul>
-            <li><a class="white-text" href="#!">Link 1</a></li>
-            <li><a class="white-text" href="#!">Link 2</a></li>
-            <li><a class="white-text" href="#!">Link 3</a></li>
-            <li><a class="white-text" href="#!">Link 4</a></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    <div class="footer-copyright">
-      <div class="container">
-      Made by <a class="brown-text text-lighten-3" href="http://materializecss.com">Materialize</a>
-      </div>
-    </div>
-  </footer>
--->
-
-  <!--  Scripts-->
   <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script src="js/materialize.js"></script>
-  <script src="js/init.js"></script>
+  <script src='http://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js'></script>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.0/js/materialize.min.js'></script>
+
+  <script src="js/datatable.js"></script>
 <script type="text/javascript">
   // Initialize collapse button
   $('.button-collapse').sideNav({

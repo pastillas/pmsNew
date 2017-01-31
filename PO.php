@@ -8,204 +8,194 @@
   <!-- CSS  -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
-  <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
-  <link href="css/items.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <style type="text/css">
+    body{
+        font-family: Arail, sans-serif;
+    }
+    /* Formatting search box */
+    .search-box{
+        position: relative;
+        display: inline-block;
+        font-size: 14px;
+    }
+    .result{
+        position: absolute;        
+        z-index: 999;
+        top: 100%;
+        left: 0;
+    }
+    .search-box input[type="text"], .result{
+        width: 100%;
+        box-sizing: border-box;
+    }
+    /* Formatting result items */
+    .result p{
+        margin: 0;
+        padding: 7px 10px;
+        border: 1px solid #CCCCCC;
+        border-top: none;
+        cursor: pointer;
+        background: #ffffff;
+    }
+    .result p:hover{
+        background: #f2f2f2;
+    }
+</style>
 
 </head>
 <body>
   <!--Navs-->
-  <?php 
-  include("navbar.php");
-  ?>
-  <?php 
-  include("sidebar.php");
-  ?>
+<?php 
+  //include("navbar.php");
+  //include("sidebar.php");
+  require('connection.php');
+  $pr_po_status_id = $_POST['pr_po_status_id'];
 
-  <div class="container">
-    <h4 class="center-align">Purchase Order Details</h4>
-    <div class="divider"></div>
-    <div class="row">
-      <div class="col s5">
-        <div class="card-panel">
-          <div class="row">
-            <form class="col s12">
-              <div class="row">
-                <div class="input-field col s6">
-                  <input value="value" id="PO_Number" type="text" class="validate">
-                  <label for="PO_Number">PO Number</label>
-                </div>
-                <div class="input-field col s6">
-                  <input value="value" id="Date" type="date" class="datepicker">
-                  <label for="Date">Date</label>
-                </div>
-               <div class="input-field col s12">
-                  <input value="value" id="PR_Number" type="text" class="validate">
-                  <label for="PR_Number">PR Number</label>
-                </div>
-                <div class="input-field col s12">
-                  <input value="value" id="Supplier" type="text" class="validate">
-                  <label for="Supplier">Supplier</label>
-                </div>
-               <div class="input-field col s12">
-                  <input value="value" id="Supplier_Address" type="text" class="validate">
-                  <label for="Supplier_Address">Supplier Address</label>
-                </div>
-               <div class="input-field col s12">
-                  <input value="value" id="Mode_Of_Procurement" type="text" class="validate">
-                  <label for="Mode_Of_Procurement">Mode of Procurement</label>
-                </div>
-                <div class="input-field col s12">
-                  <input value="value" id="Place_Of_Delivery" type="text" class="validate">
-                  <label for="Place_Of_Delivery">Place of Delivery</label>
-                </div>
-                <div class="input-field col s12">
-                  <input value="value" id="Date_Of_Delivery" type="date" class="datepicker">
-                  <label for="Date">Date of Delivery</label>
-                </div>
-                <div class="input-field col s12">
-                  <input value="value" id="Date_Of_Delivery" type="date" class="datepicker">
-                  <label for="Date">Date Delivered</label>
-                </div>
-                <div class="input-field col s12"> 
-                  <input value="value" id="Delivery_Term" type="text" class="validate">
-                  <label for="Delivery_Term">Delivery Term</label>
-                </div>
-                <div class="input-field col s12">
-                  <input value="value" id="Payment_Term" type="text" class="validate">
-                  <label for="Payment_Term">Payment Term</label>
-                </div>
-                <div class="input-field col s12">
-                  <select>
-                    <option value="" disabled selected>Choose your option</option>
-                    <option value="1">YES</option>
-                    <option value="2">NO</option>
+  $sql = 'select * from pr_po_status ps, purchase_order po, supplier s WHERE ps.pr_po_status_id = ' . $pr_po_status_id . ' AND ps.po_number = po.po_number AND ps.supplier_pk = s.supplier_pk;';
+  $query = mysqli_query($conn, $sql);
+  $result = mysqli_fetch_assoc($query);
+
+  echo '<script type="text/javascript">var supplier_pk = ' . $result['supplier_pk'] . '; var supplier_name = "' . $result['supplier_name'] . '";</script>'
+?>
+
+<h4 class="center-align" >VIEW/EDIT PURCHASE ORDER</h4>
+<p id="query"></p>
+
+<div class="container">
+
+  <div class="row">
+    <div class="col s5">
+      <div class="card-panel">
+        <div class="row">
+
+          <form class="col s12" class="col s12" name="updatePOForm" action="" method="POST" onsubmit="return updatePO()" id="updatePOForm">
+            <div class="row">
+
+              <div class="input-field col s6">
+                <input type="hidden" name="pr_po_status_id" value="<?php echo $result['pr_po_status_id']?>">
+                <input id="PO_Number" name="po_number"  type="hidden" value="<?php echo $result['po_number']?>" class="validate">
+                <p id="PO_Number_P">PO #: <?php echo $result['po_number']?></p>
+              </div>
+
+             <div class="input-field col s6">
+                <input placeholder="Placeholder" value=" <?php echo $result['pr_number']?>" name="pr_number" id="PR_Number" type="hidden" class="validate">
+                <p id="PR_Number_P">PR #: <?php echo $result['pr_number']?></p>
+              </div>
+
+              <div class="input-field col s12">
+                <input name="po_date" id="po_date" type="date" value="<?php echo $result['po_date']?>" class="datepicker" required="true">
+                <label for="po_date">PO Date</label>
+              </div>
+              <div class="search-box input-field col s12">
+                <label for="Supplier">Supplier</label>
+                <input name="supplier_pk" id="supplier_pk" value="<?php echo $result['supplier_pk']?>" type="hidden">
+                <input type="text" id="Supplier" value="<?php echo $result['supplier_name']?>" autocomplete="off"  required="true"/>
+                <div class="result"></div>
+              </div>
+             <div class="input-field col s12">
+                <input  name="po_mode_of_procurement" value="<?php echo $result['po_mode_of_procurement']?>" id="Mode_Of_Procurement" type="text" class="validate" required="true">
+                <label for="Mode_Of_Procurement">Mode of Procurement</label>
+              </div>
+              <div class="input-field col s12">
+                <input  name="po_place_of_delivery" value="<?php echo $result['po_place_of_delivery']?>" id="Place_Of_Delivery" type="text" class="validate" >
+                <label for="Place_Of_Delivery">Place of Delivery</label>
+              </div>
+              <div class="input-field col s12">
+                <input name="delivery_date" value="<?php echo $result['delivery_date']?>" id="Date_Of_Delivery" type="date" class="datepicker" required="true">
+                <input type="hidden" name="">
+                <label for="Date_Of_Delivery">Date of Delivery</label>
+              </div>
+              <div class="input-field col s12"> 
+                <input name="po_delivery_term" value="<?php echo $result['po_delivery_term']?>" id="Delivery_Term" type="text" class="validate" required="true">
+                <label for="Delivery_Term">Delivery Term</label>
+              </div>
+              <div class="input-field col s12">
+                <input  name="po_payment_term" value="<?php echo $result['po_payment_term']?>" id="Payment_Term" type="text" class="validate" required="true">
+                <label for="Payment_Term">Payment Term</label>
+              </div>
+              <div class="input-field col s12">
+                <input type="hidden" name="for_payment_tmp" value="<?php echo $result['for_payment']?>">
+                  <select name="for_payment">
+                    <?php
+                      if($result['for_payment'] == 1){
+                        echo '<option value="1" selected="true">YES</option><option value="2" >NO</option>';
+                      }else{
+                        echo '<option value="1" >YES</option><option value="2" selected="true">NO</option>';
+                      }
+                    ?>
                   </select>
                   <label>For Payment</label>
-                </div>
+              </div>
                 <div class="input-field col s12">
-                  <input value="value" id="Payment_Term" type="text" class="validate">
+                  <input value="<?php echo $result['po_d_tracks']?>"  name="po_d_tracks" id="Payment_Term" type="text" class="validate">
                   <label for="Payment_Term">D Tracks #</label>
                 </div>
-              </div>
-            </form>
-          </div>
+            </div>
+          </form>
         </div>
       </div>
+    </div>
 
-      <div class="col s7">
-        <table class="striped">
-          <thead>
-            <tr>
-              <th >Item No.</th>
-              <th>Quantity</th>
-              <th>Unit</th>
-              <th>Description</th>
-              <th>Unit Cost</th>
-              <th>Amount</th>
-            </tr>
-          </thead>
+    <div class="col s7">
+      <table class="striped">
+        <thead>
+          <tr>
+          <th>Item Description</th>
+          <th>Unit of Measure</th>
+          <th>Estimated Unit Cost</th>
+          <th>Quantity</th>
+          <th>Estimated Cost</th>
+        </tr>
+        </thead>
 
-          <tbody>
-            <tr>
-              <td>1</td>
-              <td>78</td>
-              <td>kg</td>
-              <td>Cement</td>
-              <td>$0.87</td>
-              <td>$0.87</td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>23</td>
-              <td>m</td>
-              <td>Paper</td>
-              <td>$0.87</td>
-              <td>$0.87</td>
-            </tr>
-            <tr>
-              <td>3</td>
-              <td>44</td>
-              <td>pcs</td>
-              <td>Pencil</td>
-              <td>$0.87</td>
-              <td>$0.87</td>
-            </tr>
-            <tr>
-              <td colspan="4">Total Amount</td>
-              <td colspan="2">2.61</td>
-            </tr>
-          </tbody>
-        </table>
-        <div class="col s10 offset-s2">
-          <a href="editPR.php" class="waves-effect waves-light btn">EDIT</a>
-          <a href="#" class="waves-effect waves-light btn">DELETE</a>
-          <a href="pendingPR.php" class="waves-effect waves-light btn">PRINT PO</a>
-        </div>
+        <tbody>
+        <?php 
+          $sql = ' select * from items i left outer join purchase_request_items pi ON i.item_code = pi.item_code WHERE pi.pr_number = ' . $result['pr_number'] . ';';
+            $pr_items = mysqli_query($conn, $sql);
+
+             $total = 0;
+
+            while(($row = mysqli_fetch_assoc($pr_items)) != null){
+              echo '<tr>'.
+                    '<td>' . $row['item_description'] . '</td>' . 
+                    '<td>' . $row['item_unit_measure'] . '</td>' . 
+                    '<td>Php ' . $row['item_euc'] . '</td>' .
+                    '<td>' . $row['quantity'] . '</td>' .
+                    '<td>Php ' . $row['quantity'] * $row['item_euc'] . '</td>' .
+                    '</tr>';
+                     
+              $total += $row['quantity'] * $row['item_euc'];
+            }
+        ?>
+         
+         
+          <tr>
+            <td class="tg-yw4l" colspan="4">Total Estimated Cost</td>
+            <td class="tg-yw4l" colspan="2"></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="col s10 offset-s2">
+        <button type="submit" form="updatePOForm" class="waves-effect waves-light btn">SAVE PO</button>
+        <button type="submit"  class="waves-effect waves-light btn">DELETE PO</button>
       </div>
-      
     </div>
   </div>
+</div>
 
 
-
-            
-
-
-<!--
-  <footer class="page-footer teal">
-
-    <div class="container">
-      <div class="row">
-        <div class="col l6 s12">
-          <h5 class="white-text">Company Bio</h5>
-          <p class="grey-text text-lighten-4">We are a team of college students working on this project like it's our full time job. Any amount would help support and continue development on this project and is greatly appreciated.</p>
-
-
-        </div>
-        <div class="col l3 s12">
-          <h5 class="white-text">Settings</h5>
-          <ul>
-            <li><a class="white-text" href="#!">Link 1</a></li>
-            <li><a class="white-text" href="#!">Link 2</a></li>
-            <li><a class="white-text" href="#!">Link 3</a></li>
-            <li><a class="white-text" href="#!">Link 4</a></li>
-          </ul>
-        </div>
-        <div class="col l3 s12">
-          <h5 class="white-text">Connect</h5>
-          <ul>
-            <li><a class="white-text" href="#!">Link 1</a></li>
-            <li><a class="white-text" href="#!">Link 2</a></li>
-            <li><a class="white-text" href="#!">Link 3</a></li>
-            <li><a class="white-text" href="#!">Link 4</a></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    <div class="footer-copyright">
-      <div class="container">
-      Made by <a class="brown-text text-lighten-3" href="http://materializecss.com">Materialize</a>
-      </div>
-    </div>
-  </footer>
--->
 
   <!--  Scripts-->
   <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script src="js/materialize.js"></script>
-  <script src="js/init.js"></script>
   <script type="text/javascript">
   $('.datepicker').pickadate({
     selectMonths: true, // Creates a dropdown to control month
     selectYears: 15 // Creates a dropdown of 15 years to control year
   });
-  </script>
-  <script type="text/javascript">
  $(document).ready(function() {
     $('select').material_select();
   });
-  </script>
-  <script type="text/javascript">
   // Initialize collapse button
   $('.button-collapse').sideNav({
       menuWidth: 300, // Default is 240
@@ -214,10 +204,63 @@
       draggable: true // Choose whether you can drag to open on touch screens
     }
   );
-     
-  // Initialize collapsible (uncomment the line below if you use the dropdown variation)
-  //$('.collapsible').collapsible();
-        
+    $(document).ready(function(){
+    $('.search-box input[type="text"]').on("keyup input", function(){
+        /* Get input value on change */
+        var term = $(this).val();
+        var resultDropdown = $(this).siblings(".result");
+        if(term.length){
+            $.get("modules/searchSuppliers.php", {query: term}).done(function(data){
+                // Display the returned data in browser
+                resultDropdown.html(data);
+            });
+        } else{
+            resultDropdown.empty();
+        }
+    });
+    
+    // Set search input value on click of result item
+    $(document).on("click", ".result p", function(){
+        supplier_name = $(this).text();
+
+        if(supplier_name.substring(0, 2) != 'No'){
+          $(this).parents(".search-box").find('input[type="text"]').val(supplier_name);
+          $(this).parent(".result").empty();
+        }
+
+       $.ajax({
+          type: "POST",
+          url: "modules/getSupplierPK.php",
+          data: 'supplier_name=' + supplier_name,
+          success: function( strMessage ){
+            document.getElementById('supplier_pk').value = strMessage;
+            supplier_pk = strMessage;
+          }
+        });
+    });
+  });
+
+  function updatePO(){
+    if(supplier_pk != null && supplier_name == document.getElementById('Supplier').value){
+      $.ajax({
+        url: "modules/updatePO.php",
+        method: "POST",
+        data: $('form').serialize(),
+        datatype: "text",
+        success: function(strMessage){
+            //document.getElementById('query').innerHTML = strMessage;
+            Materialize.toast('Changes Saved.', 3000, 'rounded');
+        }
+      });
+
+    }else{  
+      Materialize.toast('Please Select Supplier. Thank you.', 3000, 'rounded');
+    }
+
+    return false;
+ }
+       
+
   </script>
 </body>
 </html>

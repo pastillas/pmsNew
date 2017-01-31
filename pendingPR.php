@@ -81,7 +81,7 @@
         </thead>
         <tbody>
         <?php
-          $sql = 'SELECT ps.pr_po_status_id as \'pr_po_status_id\', ps.pr_number as \'pr_number\', ps.po_number as \'po_number\', ps.for_payment as \'for_payment\', pr.office_code as \'office_code\', o.office_name as \'office_name\', ps.supplier_pk as \'supplier_pk\', ps.delivery_date as \'delivery_date\', ps.status as \'status\' FROM pr_po_status ps, purchase_request pr, offices o WHERE ps.pr_number = pr.pr_number AND ps.for_payment = 0 AND pr.office_code = o.office_code ;';
+          $sql = 'SELECT ps.pr_po_status_id as \'pr_po_status_id\', ps.pr_number as \'pr_number\', ps.po_number as \'po_number\', ps.for_payment as \'for_payment\', pr.office_code as \'office_code\', o.office_name as \'office_name\', ps.supplier_pk as \'supplier_pk\', ps.delivery_date as \'delivery_date\', ps.status as \'status\' FROM pr_po_status ps, purchase_request pr, offices o WHERE ps.pr_number = pr.pr_number AND ps.for_payment = 2 AND pr.office_code = o.office_code ;';
 
           $query = mysqli_query($conn, $sql);
           while(($row = mysqli_fetch_assoc($query)) != null){
@@ -98,18 +98,23 @@
                 echo '<td class="po" onclick=openPO(' . $row['pr_po_status_id'] . ')>' . $row['po_number'] . '</td>';
                 echo '<td>' . $row['office_name'] . '</td>';
 
-                $sql  = 'SELECT supplier_name WHERE supplier_pk = ' . $row['supplier_pk'] . ';';
+                $sql  = 'SELECT supplier_name FROM supplier WHERE supplier_pk = ' . $row['supplier_pk'] . ';';
                 $result = mysqli_query($conn, $sql);
                 $supplier_name = mysqli_fetch_array($result);
                 echo '<td>' . $supplier_name[0] . '</td>';
-                echo '<td>' . $row['delivery_date'] . '</td>';
+
+                if($row['delivery_date'] != null)
+                  echo '<td>' . $row['delivery_date'] . '</td>';
+                else
+                  echo '<td>N/A</td>';
+
               }
 
               $sql = ' select SUM(quantity * pr_item_euc) as \'total\' from purchase_request_items Where pr_number  = ' . $row['pr_number'] . ';';
               $result = mysqli_query($conn, $sql);
               $total = mysqli_fetch_array($result);
 
-              echo '<td>' . $total['total'] . '</td>';
+              echo '<td>Php ' . $total['total'] . '</td>';
 
               if($row['status'] == null)
                 echo '<td onclick=openStatusModal(' . $row['pr_po_status_id'] . ')>N/A</td>';
