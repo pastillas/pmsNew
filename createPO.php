@@ -257,7 +257,6 @@
  function validatePO(){
   var valid = false;
     if(supplier_pk != null && supplier_name == document.getElementById('Supplier').value){
-      alert(1);
       $.ajax({
         url: "modules/insertPO.php",
         method: "POST",

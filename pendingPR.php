@@ -12,6 +12,9 @@
   <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
   <link href="css/items.css" type="text/css" rel="stylesheet" media="screen,projection"/>
   <link rel="stylesheet" type="text/css" href="css/datatable.css">
+  <link rel="stylesheet" type="text/css" href="css/sweetalert.css">
+  
+  <script src="js/sweetalert.min.js"></script>
   <style type="text/css">
   .side-nav li {
     padding: 0 !important;
@@ -31,6 +34,40 @@
         echo '<script type="text/javascript">Materialize.toast("SUCCESS. Thank you!", 3000, "rounded");</script>';
       }else
         echo '<script type="text/javascript">Materialize.toast("ERROR Saving Record.", 3000, "rounded");</script>';
+    }
+
+    if(isset($_POST['pr_po_status_id_pr'])){
+      $pr_po_status_id = $_POST['pr_po_status_id_pr'];
+      $pr_number = $_POST['pr_number'];
+      $po_number = $_POST['po_number'];
+
+      $sql = "DELETE FROM pr_po_status WHERE pr_po_status_id = '$pr_po_status_id';";
+      mysqli_query($conn, $sql);
+
+      $sql = "DELETE FROM purchase_order WHERE po_number = '$po_number';";
+      mysqli_query($conn, $sql);
+
+      $sql = "DELETE FROM purchase_request_items WHERE pr_number = $pr_number;";
+      mysqli_query($conn, $sql);
+
+      $sql = "DELETE FROM purchase_request WHERE pr_number = $pr_number;";
+      mysqli_query($conn, $sql);
+
+      echo '<script type="text/javascript">swal("SUCCESS!", "Puchase Request deleted!", "success");</script>';
+    }
+
+     if(isset($_POST['pr_po_status_id_po'])){
+      $pr_po_status_id = $_POST['pr_po_status_id_po'];
+      $pr_number = $_POST['pr_number'];
+      $po_number = $_POST['po_number'];
+
+     $sql = "UPDATE PR_PO_STATUS SET po_number = null, supplier_pk = null, delivery_date = null, for_payment = 2, forwarded_date = null  WHERE pr_po_status_id = $pr_po_status_id;";
+      mysqli_query($conn, $sql);
+
+      $sql = "DELETE FROM purchase_order WHERE po_number = '$po_number';";
+      mysqli_query($conn, $sql);
+
+      echo '<script type="text/javascript">swal("SUCCESS!", "Puchase Order deleted!", "success");</script>';
     }
   ?>
 
@@ -159,9 +196,7 @@
     }
   );
      
-  // Initialize collapsible (uncomment the line below if you use the dropdown variation)
-  //$('.collapsible').collapsible();
-        
+
   $('.datepicker').pickadate({
     selectMonths: true, // Creates a dropdown to control month
     selectYears: 15 // Creates a dropdown of 15 years to control year

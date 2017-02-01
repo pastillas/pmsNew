@@ -8,6 +8,7 @@
   <!-- CSS  -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link rel="stylesheet" type="text/css" href="css/sweetalert.css">
   <style type="text/css">
     body{
         font-family: Arail, sans-serif;
@@ -49,6 +50,10 @@
   //include("navbar.php");
   //include("sidebar.php");
   require('connection.php');
+
+  if(!isset($_POST['pr_po_status_id']))
+    header('Location: pendingPR.php' );
+
   $pr_po_status_id = $_POST['pr_po_status_id'];
 
   $sql = 'select * from pr_po_status ps, purchase_order po, supplier s WHERE ps.pr_po_status_id = ' . $pr_po_status_id . ' AND ps.po_number = po.po_number AND ps.supplier_pk = s.supplier_pk;';
@@ -177,18 +182,42 @@
       </table>
       <div class="col s10 offset-s2">
         <button type="submit" form="updatePOForm" class="waves-effect waves-light btn">SAVE PO</button>
-        <button type="submit"  class="waves-effect waves-light btn">DELETE PO</button>
+        <button type="submit" form="deletePOForm" id="deletePOSubmit"  class="waves-effect waves-light btn">DELETE PO</button>
       </div>
     </div>
   </div>
 </div>
 
-
+<form action="pendingPR.php" method="POST" name="deletePOForm" id="deletePOForm">
+  <input type="hidden" name="pr_po_status_id_po" value="<?php echo $pr_po_status_id?>">
+  <input type="hidden" name="pr_number" value="<?php echo $result['pr_number']?>">
+  <input type="hidden" name="po_number" value="<?php echo $result['po_number']?>">
+</form>
 
   <!--  Scripts-->
   <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script src="js/materialize.js"></script>
+  <script src="js/sweetalert.min.js"></script>
   <script type="text/javascript">
+ 
+  $(document).ready(function(){
+    $('#deletePOSubmit').click(function(event){
+      event.preventDefault();
+        swal({
+        title: "Are you sure?",
+        text: "You will not be able to recover this PUCHASE ORDER!",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Yes, delete it!",
+        closeOnConfirm: false
+      },
+      function(){
+        document.getElementById('deletePOForm').submit();
+      });
+    });
+  });
+
   $('.datepicker').pickadate({
     selectMonths: true, // Creates a dropdown to control month
     selectYears: 15 // Creates a dropdown of 15 years to control year

@@ -12,6 +12,7 @@
   <link href="css/createPO.css" type="text/css" rel="stylesheet" media="screen,projection"/>
   <link href="css/sidenav.css" type="text/css" rel="stylesheet" media="screen,projection"/>
   <link rel="stylesheet" type="text/css" href="css/datatable.css">
+  <link rel="stylesheet" type="text/css" href="css/sweetalert.css">
 
   <?php require("connection.php");
 
@@ -173,11 +174,14 @@
     </table>
         <div class="col s10 offset-s2">
           <button type="submit" form="createPRForm" id="createPRSubmit" name="createPRSubmit" class="waves-effect waves-light btn">SAVE</button>
-          <a href="#" class="waves-effect waves-light btn">DELETE</a>
+          <button type="submit" form="deletePRForm" id="deletePRSubmit" name="deletePRSubmit" class="waves-effect waves-light btn">DELETE PR</button>
 
           <?php 
-            if($pr_po_status['po_number'] == null) 
-              echo '<button type="submit" form="createPOForm" id="createPOSubmit" name="createPOSubmit" class="waves-effect waves-light btn">CREATE PURCHASE ORDER</button>';
+            $has_po = false;
+            if($pr_po_status['po_number'] == null) {
+              echo '<button type="submit" form="createPOForm" id="createPOSubmit" name="createPOSubmit" class="waves-effect waves-light btn">CREATE PO</button>';
+
+            }
             else 
               echo '<button type="submit" form="viewPOForm" id="viewPOSubmit" name="viewPOSubmit" class="waves-effect waves-light btn">VIEW PURCHASE ORDER</button>';
           ?>
@@ -186,6 +190,12 @@
       </div>
     </div>
   </div>
+
+<form action="pendingPR.php" method="POST" name="deletePRForm" id="deletePRForm">
+  <input type="hidden" name="pr_po_status_id_pr" value="<?php echo $pr_po_status_id?>">
+  <input type="hidden" name="pr_number" value="<?php echo $pr_po_status['pr_number']?>">
+  <input type="hidden" name="po_number" value="<?php echo $pr_po_status['po_number']?>">
+</form>
 
 <form action="createPO.php" method="POST" name="createPOForm" id="createPOForm">
   <input type="hidden" name="pr_po_status_id" value="<?php echo $pr_po_status_id?>">
@@ -281,7 +291,30 @@
   <script src='https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.0/js/materialize.min.js'></script>
   <script src="js/datatable.js"></script>
   <script src="js/moment.js"></script>
+  <script src="js/sweetalert.min.js"></script>
   <script type="text/javascript">
+  function confirmDeletePR(){
+    var confirmVal = confirm("Do you want to DELETE this PURCHASE REQUEST?");
+    return confirmVal;
+  }
+
+  $(document).ready(function(){
+    $('#deletePRSubmit').click(function(event){
+      event.preventDefault();
+        swal({
+        title: "Are you sure?",
+        text: "You will not be able to recover this PUCHASE REQUEST!",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Yes, delete it!",
+        closeOnConfirm: false
+      },
+      function(){
+        document.getElementById('deletePRForm').submit();
+      });
+    });
+  });
 
   $('.datepicker').pickadate({
     selectMonths: true, // Creates a dropdown to control month
