@@ -4,7 +4,7 @@
 	if(!isset($_SESSION['name'])){
 		header("Location: index.php");
 	}
-	elseif(isset($_SESSION['name'])){
+	elseif(isset($_SESSION['name'])z){
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -74,7 +74,7 @@ include("calendar.php");
 -->
 
   <!--  Scripts-->
-  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="js/jquery-2.1.1.min.js"></script>
   <script src="js/materialize.js"></script>
   <script src="js/init.js"></script>
 

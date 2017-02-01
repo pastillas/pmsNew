@@ -3,7 +3,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
-  <title>Offices</title>
+  <title>Items</title>
 
   <!-- CSS  -->
   <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.0/css/materialize.min.css'>
@@ -13,7 +13,11 @@
   <link href="css/items.css" type="text/css" rel="stylesheet" media="screen,projection"/>
   <link rel="stylesheet" type="text/css" href="css/datatable.css">
   <style type="text/css">
-  .side-nav li {
+  .side-nav li, 
+  .side-nav .collapsible-header,
+  .side-nav.fixed .collapsible-header,
+  .side-nav .collapsible-body li a,
+  .side-nav.fixed .collapsible-body li a {
     padding: 0 !important;
   }
   </style>
@@ -58,16 +62,27 @@
     <div class="row">
       <form action="<?php echo $_SERVER['PHP_SELF']?>" method="POST" id="addItemForm">
         
-        <input type="text" id="itemCode" name="itemCode" placeholder="Item Code" required>
-        <label for="#itemCode">Item Code</label>
-        <input type="text" id="itemDescription" name="itemDescription" placeholder="Description" required>
-        <label for="#itemDescription">Description</label>
-        <input type="text" id="itemUnitMeasure" name="itemUnitMeasure" placeholder="Unit Measure" required>
-        <label for="#itemUnitMeasure">Unit Measure</label>
-        <input type="text" id="itemExpenditure" name="itemExpenditure" placeholder="Item Expenditure" required>
-        <label for="#itemExpenditure">Item Expenditure</label>
-        <input type="number" step=any id="itemEuc" name="itemEuc" placeholder="Estimated Unit Cost" required>
-        <label for="#itemEuc">Estimated Unit Cost</label>
+        <div class="input-field col s12">
+          <input type="text" id="itemCode" name="itemCode"  required>
+          <label for="itemCode">Item Code</label>
+        </div>
+        <div class="input-field col s12">
+          <input type="text" id="itemDescription" name="itemDescription" required>
+          <label for="itemDescription">Description</label>
+        </div>
+        <div class="input-field col s12">
+          <input type="text" id="itemUnitMeasure" name="itemUnitMeasure" required>
+          <label for="itemUnitMeasure">Unit Measure</label>
+        </div>
+
+        <div class="input-field col s12">
+          <input type="text" id="itemExpenditure" name="itemExpenditure" required>
+          <label for="itemExpenditure">Item Expenditure</label>
+        </div>
+        <div class="input-field col s12">
+          <input type="number" step=any id="itemEuc" name="itemEuc"  required>
+          <label for="itemEuc">Estimated Unit Cost</label>
+        </div>
       </form>
     </div>
   </div>
@@ -84,15 +99,15 @@
         
         <p id="itemCodeP"></p>
        
-        <input type="text" id="itemDescription" name="itemDescription" placeholder="Description" required>
+        <input type="text" id="itemDescription" name="itemDescription" required>
         <label for="#itemDescription">Description</label>
-        <input type="text" id="itemUnitMeasure" name="itemUnitMeasure" placeholder="Unit Measure" required>
+        <input type="text" id="itemUnitMeasure" name="itemUnitMeasure"  required>
         <label for="#itemUnitMeasure">Unit Measure</label>
-        <input type="text" id="itemExpenditure" name="itemExpenditure" placeholder="Item Expenditure" required>
+        <input type="text" id="itemExpenditure" name="itemExpenditure" required>
         <label for="#itemExpenditure">Item Expenditure</label>
-        <input type="number" step=any id="itemEuc" name="itemEuc" placeholder="Estimated Unit Cost" required>
+        <input type="number" step=any id="itemEuc" name="itemEuc" required>
         <label for="#itemEuc">Estimated Unit Cost</label>
-        <input type="hidden" id="itemCode" name="itemCode" placeholder="Item Code" required>
+        <input type="hidden" id="itemCode" name="itemCode"  required>
         
       </form>
     </div>
@@ -103,7 +118,8 @@
 </div>
 
 <div class="row">
-  <div id="admin" style="margin: 102px 30px 30px 330px; width: 79%;">
+  <div id="admin" style="margin: 102px 30px 30px 330px; width: 76.5%;">
+
     <div class="card material-table">
       <div class="table-header">
         <span class="table-title">ITEMS</span>
@@ -143,7 +159,7 @@
   </div>
 </div>
 
-  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="js/jquery-2.1.1.min.js"></script>
   <script src="js/materialize.js"></script>
   <script src='http://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js'></script>
   <script src='https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.0/js/materialize.min.js'></script>
@@ -155,6 +171,13 @@
     // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
     $('.modal').modal();
   });
+    $('.button-collapse').sideNav({
+      menuWidth: 300, // Default is 240
+      edge: 'left', // Choose the horizontal origin
+      closeOnClick: false, // Closes side-nav on <a> clicks, useful for Angular/Meteor
+      draggable: true // Choose whether you can drag to open on touch screens
+    }
+  );
 
   function editItem( item_code ){
     var item_description = document.getElementById("idc" + item_code).innerHTML;

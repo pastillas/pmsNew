@@ -155,36 +155,7 @@ td.pr, th.po{
               <td>Bonning's</td>
               <td>City Procurement Office</td>
             </tr>
-            <tr>
-              <td class="po"><a href="PO.php">12-0918</a></td>
-              <td class="pr"><a href="PR.php">1918</a></td>
-              <td>Bonning's</td>
-              <td>City Procurement Office</td>
-            </tr>
-            <tr>
-              <td class="po"><a href="PO.php">12-0918</a></td>
-              <td class="pr"><a href="PR.php">1918</a></td>
-              <td>Bonning's</td>
-              <td>City Procurement Office</td>
-            </tr>
-            <tr>
-              <td class="po"><a href="PO.php">12-0918</a></td>
-              <td class="pr"><a href="PR.php">1918</a></td>
-              <td>Bonning's</td>
-              <td>City Procurement Office</td>
-            </tr>
-            <tr>
-              <td class="po"><a href="PO.php">12-0918</a></td>
-              <td class="pr"><a href="PR.php">1918</a></td>
-              <td>Bonning's</td>
-              <td>City Procurement Office</td>
-            </tr>
-            <tr>
-              <td class="po"><a href="PO.php">12-0918</a></td>
-              <td class="pr"><a href="PR.php">1918</a></td>
-              <td>Bonning's</td>
-              <td>City Procurement Office</td>
-            </tr>
+            
           </tbody>
         </table>
       </div>
