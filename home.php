@@ -22,27 +22,24 @@ td.pr, th.po{
 
 <!--Navs-->
 <?php 
-    //require("navbar.php");
-    //require("sidebar.php");
+    require("navbar.php");
+    require("sidebar.php");
 ?>
 
-<div class="container">
-<div class="row">
-  <div class="col s10">
-    <div class="card-panel">
+
+
+    <div class="card-panel"  style="margin: 102px 30px 30px 330px; width: 76.5%;">
       <div class="row">
           <div class="row">
-            <div style="background-color: #009688;">
-              <h2 >UPCOMING DELIVERIES</h2>
+              <h2 class="teal-text center-align" style="margin: 0px;">UPCOMING DELIVERIES</h2>
              <form method="POST" name="deliveryForm" id="deliveryForm">
-              <div class="input-field col s4">
-                <input name="delivery_date" placeholder="Delivery date" id="delivery_date" type="date" class="datepicker">
+              <div class="input-field col s12" style="margin-top:0;">
+                <input name="delivery_date" placeholder="Delivery date" id="delivery_date" type="date" class="datepicker center-align" style=" margin-bottom:0px;">
                 
               </div>
               </form>
-            </div>
             <table class="centered striped">
-          <thead>
+          <thead style="background-color: #e0f2f1;">
             <tr>
               <th class="po">PO No.</th>
               <th class="pr">PR No.</th>
@@ -58,7 +55,7 @@ td.pr, th.po{
           </div>
       </div>
     </div>
-  </div>
+
   
   <form action="PR.php" method="POST" id="prForm">
     <input type="hidden" name="pr_po_status_id" value="">
