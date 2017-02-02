@@ -22,127 +22,26 @@ td.pr, th.po{
 
 <!--Navs-->
 <?php 
-    require("navbar.php");
-    require("sidebar.php");
+    //require("navbar.php");
+    //require("sidebar.php");
 ?>
 
-<div id="md-picker__date" class="md-picker md-picker-date md-picker--inactive animated">
-    <div class="md-picker__body">
-      <div id="md-date__viewHolder" class="md-picker__viewHolder animated">
-        <ul class="md-picker__views">
-          <li id="md-date__previous" class="md-picker__view">
-            <div class="md-picker__month"></div>
-            <div class="md-picker__grid">
-              <div class="md-picker__th">
-                <span>
-                  S
-                </span>
-                <span>
-                  M
-                </span>
-                <span>
-                  T
-                </span>
-                <span>
-                  W
-                </span>
-                <span>
-                  T
-                </span>
-                <span>
-                  F
-                </span>
-                <span>
-                  S
-                </span>
+<div class="container">
+<div class="row">
+  <div class="col s10">
+    <div class="card-panel">
+      <div class="row">
+          <div class="row">
+            <div style="background-color: #009688;">
+              <h2 >UPCOMING DELIVERIES</h2>
+             <form method="POST" name="deliveryForm" id="deliveryForm">
+              <div class="input-field col s4">
+                <input name="delivery_date" placeholder="Delivery date" id="delivery_date" type="date" class="datepicker">
+                
               </div>
-              <div class="md-picker__tr"></div>
+              </form>
             </div>
-          </li>
-          <li id="md-date__current" class="md-picker__view">
-            <div class="md-picker__month"></div>
-            <div class="md-picker__grid">
-              <div class="md-picker__th">
-                <span>
-                  S
-                </span>
-                <span>
-                  M
-                </span>
-                <span>
-                  T
-                </span>
-                <span>
-                  W
-                </span>
-                <span>
-                  T
-                </span>
-                <span>
-                  F
-                </span>
-                <span>
-                  S
-                </span>
-              </div>
-              <div class="md-picker__tr"></div>
-            </div>
-          </li>
-          <li id="md-date__next" class="md-picker__view">
-            <div class="md-picker__month"></div>
-            <div class="md-picker__grid">
-              <div class="md-picker__th">
-                <span>
-                  S
-                </span>
-                <span>
-                  M
-                </span>
-                <span>
-                  T
-                </span>
-                <span>
-                  W
-                </span>
-                <span>
-                  T
-                </span>
-                <span>
-                  F
-                </span>
-                <span>
-                  S
-                </span>
-              </div>
-              <div class="md-picker__tr"></div>
-            </div>
-          </li>
-        </ul>
-        <button id="md-date__left" class="md-button md-picker__left" type="button"></button>
-        <button id="md-date__right" class="md-button md-picker__right" type="button"></button>
-      </div>
-      <ul id="md-date__years" class="md-picker__years md-picker__years--invisible animated"></ul>
-      <div class="md-picker__action" style="display:none;">
-        <button id="md-date__cancel" class="md-button" type="button">cancel</button>
-        <button id="md-date__ok" class="md-button" type="button">ok</button>
-      </div>
-    </div>
-    <div class="calendar-main">
-      <div id="md-date__header" class="md-picker__header">
-        <h3 class="white-text">Upcoming Deliveries</h3>
-        <h4 id="md-date__title" class="md-picker__subtitle">
-          <span id="md-date__subtitle"></span>
-          <span id="md-date__titleDay"></span>
-          <span id="md-date__titleMonth"></span>
-        </h4>
-      </div>
-      <div class="input-field">
-        <input id="search" type="search" required>
-        <label for="search"><i class="material-icons">search</i></label>
-        <i class="material-icons">close</i>
-      </div>
-      <div class="upDev">
-        <table class="centered striped">
+            <table class="centered striped">
           <thead>
             <tr>
               <th class="po">PO No.</th>
@@ -152,36 +51,33 @@ td.pr, th.po{
             </tr>
           </thead>
 
-          <tbody>
-            <tr>
-              <td class="po"><a href="PO.php">12-0918</a></td>
-              <td class="pr"><a href="PR.php">1918</a></td>
-              <td>Bonning's</td>
-              <td>City Procurement Office</td>
-            </tr>
-            <tr>
-              <td class="po"><a href="PO.php">12-0918</a></td>
-              <td class="pr"><a href="PR.php">1918</a></td>
-              <td>Bonning's</td>
-              <td>City Procurement Office</td>
-            </tr>
-            
+          <tbody id="tbody">
+           
           </tbody>
         </table>
+          </div>
       </div>
     </div>
-
-
   </div>
+  
+  <form action="PR.php" method="POST" id="prForm">
+    <input type="hidden" name="pr_po_status_id" value="">
+  </form>
 
+  <form action="PO.php" method="POST" id="poForm">
+    <input type="hidden" name="pr_po_status_id" value="">
+  </form>
 
   <!--  Scripts-->
   <script src="js/jquery-2.1.1.min.js"></script>
   <script src="js/materialize.js"></script>
   <script src="js/moment.min.js"></script>
   <script src="js/md-date-time-picker.js"></script>
-  <script src="js/init.js"></script>
+  <script src="js/moment.js"></script>
+  
 <script type="text/javascript">
+
+
   // Initialize collapse button
   $('.button-collapse').sideNav({
       menuWidth: 300, // Default is 240
@@ -190,12 +86,58 @@ td.pr, th.po{
       draggable: true // Choose whether you can drag to open on touch screens
     }
   );
-     
+
+   function openPR(id){
+      var prForm = document.getElementById('prForm');
+      prForm.pr_po_status_id.value = id;
+      prForm.submit();
+  }
+
+  function openPO(id){
+      var poForm = document.getElementById('poForm');
+      poForm.pr_po_status_id.value = id;
+      poForm.submit();
+  }
+
+  $(document).ready(function(){
+    var delivery_date = document.getElementById('delivery_date').value = moment().format('DD MMMM, YYYY');
+    $.ajax({
+
+        data: "delivery_date=" + delivery_date,
+        type: "POST",
+        url: "modules/getPrPoStatus.php",
+        success: function(strMessage){
+          document.getElementById("tbody").innerHTML = strMessage;
+        }
+      });
+  });
+
+
+  $(document).ready(function(){
+
+    $("#delivery_date").on("change", function() {
+
+      var delivery_date = $(this).val();
+      var form = $("#deliveryForm").serialize() + "&delivery_date" + delivery_date;
+
+      $.ajax({
+
+        data: form,
+        type: "POST",
+        url: "modules/getPrPoStatus.php",
+        success: function(strMessage){
+          document.getElementById("tbody").innerHTML = strMessage;
+        }
+      });
+    });
+  });
   // Initialize collapsible (uncomment the line below if you use the dropdown variation)
   //$('.collapsible').collapsible();
         
-    var x = new mdDateTimePicker('date');
-    x.toggle();
+  $('.datepicker').pickadate({
+    selectMonths: true, // Creates a dropdown to control month
+    selectYears: 15 // Creates a dropdown of 15 years to control year
+  });
   </script>
 </body>
 </html>

@@ -20,7 +20,7 @@
       header('Location: pendingPR.php' );
 
     $pr_po_status_id = $_POST['pr_po_status_id'];
-    $sql = 'SELECT * FROM pr_po_status ps, purchase_request pr, offices o WHERE ps.pr_po_status_id = ' . $pr_po_status_id . ' AND  ps.pr_number = pr.pr_number AND ps.for_payment = 2 AND pr.office_code = o.office_code ;';
+    $sql = 'SELECT * FROM pr_po_status ps, purchase_request pr, offices o WHERE ps.pr_po_status_id = ' . $pr_po_status_id . ' AND  ps.pr_number = pr.pr_number AND pr.office_code = o.office_code ;';
     
     $query  = mysqli_query($conn, $sql);
     $pr_po_status = mysqli_fetch_assoc($query);
