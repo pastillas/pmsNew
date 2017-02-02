@@ -73,35 +73,13 @@
 
       echo '<script type="text/javascript">swal("SUCCESS!", "Puchase Order deleted!", "success");</script>';
     }
+
+    $status= array("status1"=>"Juan de la Cruz", "status2"=>"Luisito Canyo", "status3"=>"Joy Miranda");
   ?>
 
 </head>
 <body>
-<div id="statusModal" class="modal modal-fixed-footer">
-  <div class="modal-content">
-    <h4>SELECT STATUS</h4>
-    <div class="row">
-      <form action="<?php echo $_SERVER['PHP_SELF']?>" onsubmit="return saveStatus()" method="POST" id="statusForm">
-      <input type="hidden" id="pr_po_status_id" name="pr_po_status_id" value="">
-        <p>
-          <input name="group1" id="status1" value="status1" type="radio"  />
-          <label for="status1">Juan de la Cruz</label>
-        </p>
-        <p>
-          <input name="group1" id="status2" value="status2"  type="radio"  />
-          <label for="status2">Luisito Canyo</label>
-        </p>
-        <p>
-          <input name="group1" id="status3" value="status3"  type="radio"/>
-          <label for="status3">Joy Miranda</label>
-        </p>
-      </form>
-    </div>
-  </div>
-  <div class="modal-footer">
-    <button type="submit" form="statusForm" name="statusFormSubmit" class="waves-effect waves-light btn-flat">Save Changes</button>
-  </div>
-</div>
+
   
 <div class="row">
   <div id="admin" style="margin: 102px 30px 30px 330px; width: 76.5%;">
@@ -165,13 +143,41 @@
               if($row['status'] == null)
                 echo '<td onclick=openStatusModal(' . $row['pr_po_status_id'] . ')>N/A</td>';
               else
-                echo '<td onclick=openStatusModal(' . $row['pr_po_status_id'] . ')>' . $row['status'] . '</td>';
+                echo '<td onclick=openStatusModal(' . $row['pr_po_status_id'] . ')>' . $status[$row['status']] . '</td>';
             echo '</tr>';
+
           }
         ?>
+          
         </tbody>
       </table>
     </div>
+  </div>
+</div>
+
+  <div id="statusModal" class="modal modal-fixed-footer">
+  <div class="modal-content">
+    <h4>SELECT STATUS</h4>
+    <div class="row">
+      <form action="<?php echo $_SERVER['PHP_SELF']?>" onsubmit="return saveStatus()" method="POST" id="statusForm">
+      <input type="hidden" id="pr_po_status_id" name="pr_po_status_id" value="">
+        <p>
+          <input name="group1" id="status1" value="status1" type="radio"  />
+          <label for="status1">Juan de la Cruz</label>
+        </p>
+        <p>
+          <input name="group1" id="status2" value="status2"  type="radio"  />
+          <label for="status2">Luisito Canyo</label>
+        </p>
+        <p>
+          <input name="group1" id="status3" value="status3"  type="radio"/>
+          <label for="status3">Joy Miranda</label>
+        </p>
+      </form>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" form="statusForm" name="statusFormSubmit" class="waves-effect waves-light btn-flat">Save Changes</button>
   </div>
 </div>
 
@@ -231,6 +237,15 @@
   function openStatusModal(id){
     document.getElementById('pr_po_status_id').value = id;
     pr_po_status_id = id;
+
+    $.ajax({
+      data: "pr_po_status_id=" + pr_po_status_id,
+      type: "POST",
+      url: "modules/getStatus.php",
+      success: function(status){
+        document.getElementById(status).checked = true;
+      }
+    });
 
     $("#statusModal").openModal();
   }

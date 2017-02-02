@@ -35,6 +35,8 @@
       }else
         echo '<script type="text/javascript">Materialize.toast("ERROR Saving Record.", 3000, "rounded");</script>';
     }
+
+     $status= array("status1"=>"Juan de la Cruz", "status2"=>"Luisito Canyo", "status3"=>"Joy Miranda");
 ?>
 </head>
 
@@ -129,7 +131,7 @@
               if($row['status'] == null)
                 echo '<td onclick=openStatusModal(' . $row['pr_po_status_id'] . ')>N/A</td>';
               else
-                echo '<td onclick=openStatusModal(' . $row['pr_po_status_id'] . ')>' . $row['status'] . '</td>';
+                echo '<td onclick=openStatusModal(' . $row['pr_po_status_id'] . ')>' . $status[$row['status']] . '</td>';
             echo '</tr>';
           }
         ?>
@@ -192,9 +194,19 @@
 
   });
 
+  
   function openStatusModal(id){
     document.getElementById('pr_po_status_id').value = id;
     pr_po_status_id = id;
+
+    $.ajax({
+      data: "pr_po_status_id=" + pr_po_status_id,
+      type: "POST",
+      url: "modules/getStatus.php",
+      success: function(status){
+        document.getElementById(status).checked = true;
+      }
+    });
 
     $("#statusModal").openModal();
   }
