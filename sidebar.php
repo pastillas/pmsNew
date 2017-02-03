@@ -32,5 +32,4 @@
   <li><a href="suppliers.php">Suppliers</a></li>
   <li><a href="item.php">Items</a></li>
   <li><a href="offices.php">Offices</a></li>
-  <li><a href="#!">Reports</a></li>    
   </ul>

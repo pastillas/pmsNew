@@ -31,7 +31,7 @@ td.pr, th.po{
     <div class="card-panel"  style="margin: 102px 30px 30px 330px; width: 76.5%;">
       <div class="row">
           <div class="row">
-              <h2 class="teal-text center-align" style="margin: 0px;">UPCOMING DELIVERIES</h2>
+              <h2 class="teal-text center-align" style="margin: 0px;">DELIVERIES</h2>
              <form method="POST" name="deliveryForm" id="deliveryForm">
               <div class="input-field col s12" style="margin-top:0;">
                 <input name="delivery_date" placeholder="Delivery date" id="delivery_date" type="date" class="datepicker center-align" style=" margin-bottom:0px;">
