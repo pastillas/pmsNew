@@ -1,13 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
+<?php
+  session_start();
+  if(!isset($_SESSION['name'])){
+    header("Location: index.php");
+  }
+  elseif(isset($_SESSION['name'])){
+?>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
-  <title>Parallax Template - Materialize</title>
-
-  <!-- CSS  -->
+  <title>PO</title>
+ <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.0/css/materialize.min.css'>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="css/createPO.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="css/sidenav.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link rel="stylesheet" type="text/css" href="css/datatable.css">
   <link rel="stylesheet" type="text/css" href="css/sweetalert.css">
   <style type="text/css">
     body{
@@ -42,7 +52,8 @@
         background: #f2f2f2;
     }
 </style>
-
+  <?php 
+    require("navbar.php"); ?>
 </head>
 <body>
   <!--Navs-->
@@ -60,10 +71,14 @@
   $query = mysqli_query($conn, $sql);
   $result = mysqli_fetch_assoc($query);
 
+  $sql = 'SELECT pr.pr_number_orig as "pr_number_orig" FROM purchase_request pr, pr_po_status ps WHERE pr.pr_number = ps.pr_number AND ps.pr_po_status_id = ' . $pr_po_status_id . ';';
+  $query = mysqli_query($conn, $sql);
+  $pr_number_orig = mysqli_fetch_array($query);
+
   echo '<script type="text/javascript">var supplier_pk = ' . $result['supplier_pk'] . '; var supplier_name = "' . $result['supplier_name'] . '";</script>'
 ?>
 
-<h4 class="center-align" >VIEW/EDIT PURCHASE ORDER</h4>
+<h4 class="center-align" style="margin-top: 72px"> VIEW/EDIT PURCHASE ORDER</h4>
 <p id="query"></p>
 
 <div class="container">
@@ -76,15 +91,21 @@
           <form class="col s12" class="col s12" name="updatePOForm" action="" method="POST" onsubmit="return updatePO()" id="updatePOForm">
             <div class="row">
 
-              <div class="input-field col s6">
+              <div class="input-field col s12">
                 <input type="hidden" name="pr_po_status_id" value="<?php echo $result['pr_po_status_id']?>">
                 <input id="PO_Number" name="po_number"  type="hidden" value="<?php echo $result['po_number']?>" class="validate">
-                <p id="PO_Number_P">PO #: <?php echo $result['po_number']?></p>
+                
+
+                <input " id="po_number_orig" name="po_number_orig" type="text" value="<?php echo $result['po_number_orig']?>" required="true">
+                <label for="po_number_orig">PO Number</label>
               </div>
 
-             <div class="input-field col s6">
+             <div class="input-field col s12">
                 <input placeholder="Placeholder" value=" <?php echo $result['pr_number']?>" name="pr_number" id="PR_Number" type="hidden" class="validate">
-                <p id="PR_Number_P">PR #: <?php echo $result['pr_number']?></p>
+                
+
+                <input " id="pr_number_orig" name="pr_number_orig" type="text" value="<?php echo $pr_number_orig[0]?>" disabled="true" required="true">
+                <label for="pr_number_orig">PR Number</label>
               </div>
 
               <div class="input-field col s12">
@@ -164,9 +185,9 @@
               echo '<tr>'.
                     '<td>' . $row['item_description'] . '</td>' . 
                     '<td>' . $row['item_unit_measure'] . '</td>' . 
-                    '<td>Php ' . $row['item_euc'] . '</td>' .
+                    '<td>Php ' . $row['pr_item_euc'] . '</td>' .
                     '<td>' . $row['quantity'] . '</td>' .
-                    '<td>Php ' . $row['quantity'] * $row['item_euc'] . '</td>' .
+                    '<td>Php ' . $row['quantity'] * $row['pr_item_euc'] . '</td>' .
                     '</tr>';
                      
               $total += $row['quantity'] * $row['item_euc'];
@@ -175,14 +196,15 @@
          
          
           <tr>
-            <td class="tg-yw4l" colspan="4">Total Estimated Cost</td>
-            <td class="tg-yw4l" colspan="2"></td>
+          <td class="tg-yw4l" colspan="4"><b>Total Estimated Cost</b></td>
+          <td class="tg-yw4l" colspan="2"><b><?php echo 'Php ' . $total;?></b></td>
           </tr>
         </tbody>
       </table>
       <div class="col s10 offset-s2">
         <button type="submit" form="updatePOForm" class="waves-effect waves-light btn">SAVE PO</button>
         <button type="submit" form="deletePOForm" id="deletePOSubmit"  class="waves-effect waves-light btn">DELETE PO</button>
+        <a href="pendingPR.php" class="waves-effect waves-light btn">Cancel</a>
       </div>
     </div>
   </div>
@@ -293,3 +315,4 @@
   </script>
 </body>
 </html>
+<?php } ?>

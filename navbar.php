@@ -4,8 +4,28 @@
     <a href="home.php" class="brand-logo white-text">Procurement Office Monitoring System</a>
     <a class="dropdown-button" href="#!" data-activates="dropdown1" id="sett"><img src="img/icons/ic_settings_white_24px.svg"></a>
   </div>
-</nav>
 
+</nav>
+<?php
+   require("conn.php");
+   
+  $user = $_SESSION['name'];
+  $query = "SELECT user.first_name, user.last_name, user.position, profpic.image FROM user INNER JOIN profpic ON user.username = profpic.username WHERE user.username = '".$user."' ";
+  $result = $db->query($query);
+  if($result->num_rows > 0){
+    while($row = $result->fetch_assoc()){
+?>
+<ul id="dropdown1" class="dropdown-content">
+  <li><a href="#!"><?php echo $row['first_name'] . ' ' . $row['last_name'] ?></a</li>
+  <!--<li class="divider"></li>-->
+  <li><a href="logout.php">Log Out</a></li>
+</ul>
+
+  <?php 
+  } 
+
+}
+  ?>
 
 <script type="text/javascript">
   $('.dropdown-button').dropdown({

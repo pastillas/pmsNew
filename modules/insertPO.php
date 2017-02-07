@@ -2,6 +2,7 @@
 	require("../connection.php");
 
 	$pr_po_status_id = $_POST['pr_po_status_id'];
+	$po_number_orig = $_POST['po_number_orig'];
 	$po_number = $_POST['po_number'];
 	$pr_number = $_POST['pr_number'];
 	$po_date = new datetime( $_POST['po_date'] );
@@ -18,7 +19,7 @@
 	$for_payment = $_POST['for_payment'];
 	$supplier_pk = $_POST['supplier_pk'];
 
-	$sql = "INSERT INTO purchase_order values($po_number, $po_year, $pr_number, '$po_mode_of_procurement', '$po_place_of_delivery', '$po_date', '$po_delivery_term', '$po_payment_term', '$po_d_tracks')";
+	$sql = "INSERT INTO purchase_order values($po_number, '$po_number_orig', $po_year, $pr_number, '$po_mode_of_procurement', '$po_place_of_delivery', '$po_date', '$po_delivery_term', '$po_payment_term', '$po_d_tracks')";
 	
 	if(!mysqli_query($conn, $sql)){
 		echo 'ERROR';

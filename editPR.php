@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<?php
+  session_start();
+  if(!isset($_SESSION['name'])){
+    header("Location: index.php");
+  }
+  elseif(isset($_SESSION['name'])){
+?>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
   <title>Parallax Template - Materialize</title>
@@ -202,3 +209,4 @@
   </script>
 </body>
 </html>
+<?php } ?>

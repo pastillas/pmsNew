@@ -2,6 +2,7 @@
 	require("../connection.php");
 
 	$pr_po_status_id = $_POST['pr_po_status_id'];
+	$po_number_orig = $_POST['po_number_orig'];
 	$po_number = $_POST['po_number'];
 	$pr_number = $_POST['pr_number'];
 	$po_date = new datetime( $_POST['po_date'] );
@@ -19,7 +20,7 @@
 	$supplier_pk = $_POST['supplier_pk'];
 	$for_payment_tmp = $_POST['for_payment_tmp'];
 
-	$sql = "UPDATE purchase_order SET po_mode_of_procurement = '$po_mode_of_procurement', po_place_of_delivery = '$po_place_of_delivery', po_date = '$po_date', po_delivery_term = '$po_delivery_term', po_payment_term = '$po_payment_term', po_d_tracks = '$po_d_tracks';";
+	$sql = "UPDATE purchase_order SET po_number_orig = '$po_number_orig', po_mode_of_procurement = '$po_mode_of_procurement', po_place_of_delivery = '$po_place_of_delivery', po_date = '$po_date', po_delivery_term = '$po_delivery_term', po_payment_term = '$po_payment_term', po_d_tracks = '$po_d_tracks';";
 
 	if(!mysqli_query($conn, $sql)){
 		echo 'ERROR';

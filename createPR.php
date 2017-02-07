@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <?php
+  session_start();
+  if(!isset($_SESSION['name'])){
+    header("Location: index.php");
+  }
+  elseif(isset($_SESSION['name'])){
+?>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
   <title>Procurement Office Monitoring System</title>
@@ -27,11 +34,13 @@
       <div class="row">
         <form class="col s12" action="" method="POST" onsubmit="return validatePR()" id="createPRForm">
           <div class="row">
-            <div class="input-field col s6">
+            <div class="input-field col s12">
               <input placeholder="PR Number" id="PR_Number" name="pr_number" type="hidden" class="validate" required=true>
-              <p id="PR_Number_P"></p>
+
+              <input id="pr_number_orig" name="pr_number_orig" type="text" required="true">
+              <label for="pr_number_orig">PR Number</label>
             </div>
-            <div class="input-field col s6">
+            <div class="input-field col s12">
               <input id="Date_PR" name="pr_date" type="date" class="datepicker"  required="true">
               <label for="Date">PR Date</label>
             </div>
@@ -273,7 +282,7 @@
         datatype: "html",
         success: function(result){
           document.getElementById("PR_Number").value=result;
-          document.getElementById("PR_Number_P").innerHTML= "PR Number: <b>" + result + '</b>';
+          //document.getElementById("PR_Number_P").innerHTML= "PR Number: <b>" + result + '</b>';
         }
       });
   });
@@ -330,3 +339,7 @@
   </script>
 </body>
 </html>
+
+<?php
+}
+?>

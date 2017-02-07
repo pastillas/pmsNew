@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <?php
+  session_start();
+  if(!isset($_SESSION['name'])){
+    header("Location: index.php");
+  }
+  elseif(isset($_SESSION['name'])){
+?>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
   <title>Procurement Office Monitoring System</title>
@@ -60,26 +67,33 @@
 <body>
 
 <h4 class="center-align" >CREATE PURCHASE ORDER</h4>
-
 <div class="container">
 
   <div class="row">
     <div class="col s5">
       <div class="card-panel">
         <div class="row">
-
+        <?php 
+          $sql = "SELECT *  FROM purchase_request WHERE pr_number = $pr_number";
+          $query = mysqli_query($conn, $sql);
+          $purchase_request = mysqli_fetch_assoc($query);
+        ?>
           <form class="col s12" class="col s12" name="createPOForm" action="pendingPR.php" method="POST" onsubmit="return validatePO()" id="createPOForm">
             <div class="row">
 
-              <div class="input-field col s6">
+              <div class="input-field col s12">
                 <input type="hidden" name="pr_po_status_id" value="<?php echo $pr_po_status_id?>">
                 <input id="PO_Number" name="po_number"  type="hidden" value="" class="validate">
-                <p id="PO_Number_P">PO #: </p>
+                
+                <input name="po_number_orig" value="" id="po_number_orig" type="text" required="true" >
+                <label for="po_number_orig">PO Number</label>
               </div>
 
-             <div class="input-field col s6">
+             <div class="input-field col s12">
                 <input placeholder="Placeholder" value=" <?php echo $pr_number?>" name="pr_number" id="PR_Number" type="hidden" class="validate">
-                <p id="PR_Number_P">PR #: <?php echo $pr_number?></p>
+
+                <input name="pr_number_orig" value="<?php echo $purchase_request['pr_number_orig']?>" id="pr_number_orig" type="text" required="true" disabled="true">
+                <label for="pr_number_orig">PR Number</label>
               </div>
 
               <div class="input-field col s12">
@@ -153,9 +167,9 @@
               echo '<tr>'.
                     '<td>' . $row['item_description'] . '</td>' . 
                     '<td>' . $row['item_unit_measure'] . '</td>' . 
-                    '<td>Php ' . $row['item_euc'] . '</td>' .
+                    '<td>Php ' . $row['pr_item_euc'] . '</td>' .
                     '<td>' . $row['quantity'] . '</td>' .
-                    '<td>Php ' . $row['quantity'] * $row['item_euc'] . '</td>' .
+                    '<td>Php ' . $row['quantity'] * $row['pr_item_euc'] . '</td>' .
                     '</tr>';
                      
               $total += $row['quantity'] * $row['item_euc'];
@@ -176,6 +190,7 @@
     </div>
   </div>
 </div>
+
 
 
   <!--  Scripts-->
@@ -240,6 +255,8 @@
           data: 'supplier_name=' + supplier_name,
           success: function( strMessage ){
             document.getElementById('supplier_pk').value = strMessage;
+
+            //document.getElementById('bla').innerHTML = strMessage;
             supplier_pk = strMessage;
           }
         });
@@ -259,7 +276,7 @@
         datatype: "html",
         success: function(result){
           document.getElementById("PO_Number").value=result;
-          document.getElementById("PO_Number_P").innerHTML= "PO #: <b>" + result + '</b>';
+          //document.getElementById("PO_Number_P").innerHTML= "PO #: <b>" + result + '</b>';
         }
       });
  });
@@ -288,3 +305,4 @@
   </script>
 </body>
 </html>
+<?php } ?>

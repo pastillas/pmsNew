@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<?php
+  session_start();
+  if(!isset($_SESSION['name'])){
+    header("Location: index.php");
+  }
+  elseif(isset($_SESSION['name'])){
+?>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
   <title>For Payment POs</title>
@@ -88,17 +95,21 @@
             <th>Supplier</th>
             <th>Delivery Date</th>
             <th>Total Estimated Cost</th>
-            <th>Status</th>
+            <th style="text-align: center;">Status</th>
           </tr>
         </thead>
         <tbody>
         <?php
-          $sql = 'SELECT ps.pr_po_status_id as \'pr_po_status_id\', ps.pr_number as \'pr_number\', ps.po_number as \'po_number\', ps.for_payment as \'for_payment\', pr.office_code as \'office_code\', o.office_name as \'office_name\', ps.supplier_pk as \'supplier_pk\', ps.delivery_date as \'delivery_date\', ps.status as \'status\' FROM pr_po_status ps, purchase_request pr, offices o WHERE ps.pr_number = pr.pr_number AND ps.for_payment = 1 AND pr.office_code = o.office_code ;';
+          $sql = 'SELECT ps.pr_po_status_id as \'pr_po_status_id\', pr.pr_number_orig as \'pr_number_orig\', ps.pr_number as \'pr_number\', ps.po_number as \'po_number\', ps.for_payment as \'for_payment\', pr.office_code as \'office_code\', o.office_name as \'office_name\', ps.supplier_pk as \'supplier_pk\', ps.delivery_date as \'delivery_date\', ps.status as \'status\' FROM pr_po_status ps, purchase_request pr, offices o WHERE ps.pr_number = pr.pr_number AND ps.for_payment = 1 AND pr.office_code = o.office_code ;';
 
           $query = mysqli_query($conn, $sql);
           while(($row = mysqli_fetch_assoc($query)) != null){
+            $sql = "SELECT po_number_orig FROM purchase_order WHERE po_number = " . $row['po_number'] . ';';
+            $query = mysqli_query($conn, $sql);
+            $po_number_orig = mysqli_fetch_array($query);
+
             echo '<tr>';
-              echo '<td class="pr" onclick=openPR(' . $row['pr_po_status_id'] . ')>' .  $row['pr_number'] . '</td>';
+              echo '<td class="pr" onclick=openPR(' . $row['pr_po_status_id'] . ')>' .  $row['pr_number_orig'] . '</td>';
 
               if($row['po_number'] == null){
                 echo '<td class="po" onclick=openPR(' . $row['pr_po_status_id'] . ')>N/A</td>';
@@ -107,7 +118,7 @@
                 echo '<td>N/A</td>';
               }
               else{
-                echo '<td class="po" onclick=openPO(' . $row['pr_po_status_id'] . ')>' . $row['po_number'] . '</td>';
+                echo '<td class="po" onclick=openPO(' . $row['pr_po_status_id'] . ')>' .$po_number_orig[0] . '</td>';
                 echo '<td>' . $row['office_name'] . '</td>';
 
                 $sql  = 'SELECT supplier_name FROM supplier WHERE supplier_pk = ' . $row['supplier_pk'] . ';';
@@ -232,3 +243,4 @@
   </script>
 </body>
 </html>
+<?php } ?>

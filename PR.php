@@ -1,9 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+<?php
+  session_start();
+  if(!isset($_SESSION['name'])){
+    header("Location: index.php");
+  }
+  elseif(isset($_SESSION['name'])){
+?>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
-  <title>Parallax Template - Materialize</title>
+  <title>PR</title>
 
  <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.0/css/materialize.min.css'>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -14,8 +21,9 @@
   <link rel="stylesheet" type="text/css" href="css/datatable.css">
   <link rel="stylesheet" type="text/css" href="css/sweetalert.css">
 
-  <?php require("connection.php");
-
+  <?php 
+    
+  require("connection.php");
     if(!isset($_POST['pr_po_status_id']))
       header('Location: pendingPR.php' );
 
@@ -28,11 +36,12 @@
 
     $purhcase_order = array('po_number' => 'N/A', 'po_date' => 'N/A');
     if($pr_po_status['po_number'] != null){
-      $sql = 'SELECT po_number, po_date FROM purchase_order WHERE po_number = ' . $pr_po_status['po_number'] . ';';
+      $sql = 'SELECT po_number, po_number_orig,  po_date FROM purchase_order WHERE po_number = ' . $pr_po_status['po_number'] . ';';
 
       $query  = mysqli_query($conn, $sql);
       $purhcase_order = mysqli_fetch_assoc($query);
     }
+    require("navbar.php");
   ?>
 
 </head>
@@ -42,7 +51,7 @@
 <body>
   <!--Navs-->
  
-<h4 class="center-align">VIEW/EDIT PURCHASE REQUEST</h4>
+<h4 class="center-align" style="margin-top: 72px">VIEW/EDIT PURCHASE REQUEST</h4>
   <div class="container">
     <div class="row">
       <div class="col s5">
@@ -50,18 +59,31 @@
           <div class="row">
             <form class="col s12" action="" method="POST" onsubmit="return validatePR()" id="createPRForm">
               <div class="row">
-                <div class="input-field col s6">
+                <div class="input-field col s12">
                   <input name="pr_number" value="<?php echo  $pr_po_status['pr_number']; ?>" id="PR_Number" type="hidden" class="validate">
-                  <p id="PR_Number_P">PR #: <?php echo $pr_po_status['pr_number']?> </p>
+
+                  <input " id="pr_number_orig" name="pr_number_orig" type="text" value="<?php echo $pr_po_status['pr_number_orig']?>" required="true">
+                  <label for="pr_number_orig">PR Number</label>
                 </div>
 
-                <div class="input-field col s6">
-                  <input id="PO_Number" value="<?php echo $purhcase_order['po_number'];?>" name="po_number" type="hidden" class="validate">
-                  <p id="PO_Number_P">PO #: <?php echo $purhcase_order['po_number']?></p>
-                </div>
                 <div class="input-field col s12">
                   <input " id="Date_PR" type="date" value="<?php echo $pr_po_status['pr_date']?>" class="datepicker">
                   <label for="Date_PR">PR Date</label>
+                </div>
+
+
+                <div class="input-field col s12">
+                  <input id="PO_Number" value="<?php echo $purhcase_order['po_number'];?>" name="po_number" type="hidden" class="validate">
+
+                   <?php 
+                    if($purhcase_order['po_date'] == 'N/A'){
+                       echo '<input " id="po_number_orig" name="po_number_orig" type="text" value="N/A" required="true" disabled="true">';
+                      echo '<label for="po_number_orig">PO Number</label>';
+                    }else{
+                      echo '<input " id="po_number_orig" name="po_number_orig" type="text" value="' . $purchase_order['po_number_orig'] . '" required="true" disabled="true">';
+                      echo '<label for="po_number_orig">PO Number</label>';
+                    }
+                  ?>
                 </div>
                 <div class="input-field col s12">
                   <?php 
@@ -127,8 +149,8 @@
   <div class="col s7">
     <table>
       <tr>
-        <td><h5>PR ITEMS</h5></td>
-        <td><button onclick="openModal()" class="btn waves-effect waves-light teal" id="addCPR"><i class="material-icons">add</i></button> </td>
+        <td><h5 style="float: right;">PR ITEMS</h5></td>
+        <td><button onclick="openModal()" style="text-align: right;" class="btn waves-effect waves-light teal" id="addCPR"><i class="material-icons">add</i></button> </td>
       </tr>
     </table>
 
@@ -155,9 +177,9 @@
               echo '<tr>'.
                     '<td>' . $row['item_description'] . '</td>' . 
                     '<td>' . $row['item_unit_measure'] . '</td>' . 
-                    '<td>Php ' . $row['item_euc'] . '</td>' .
+                    '<td>Php ' . $row['pr_item_euc'] . '</td>' .
                     '<td>' . $row['quantity'] . '</td>' .
-                    '<td>Php ' . $row['quantity'] * $row['item_euc'] . '</td>' .
+                    '<td>Php ' . $row['quantity'] * $row['pr_item_euc'] . '</td>' .
                     '</tr>';
                echo '<script type="text/javascript">selectedItems.push(\'' . $row['item_code'] . '\')</script>';
                      
@@ -167,14 +189,15 @@
         ?>
 
         <tr>
-          <td class="tg-yw4l" colspan="4">Total Estimated Cost</td>
-          <td class="tg-yw4l" colspan="2"><?php echo 'Php ' . $total;?></td>
+          <td class="tg-yw4l" colspan="4"><b>Total Estimated Cost</b></td>
+          <td class="tg-yw4l" colspan="2"><b><?php echo 'Php ' . $total;?></b></td>
         </tr>
       </tbody>
     </table>
-        <div class="col s10 offset-s2">
+        <div class="col s12 ">
           <button type="submit" form="createPRForm" id="createPRSubmit" name="createPRSubmit" class="waves-effect waves-light btn">SAVE</button>
           <button type="submit" form="deletePRForm" id="deletePRSubmit" name="deletePRSubmit" class="waves-effect waves-light btn">DELETE PR</button>
+          <a href="pendingPR.php" class="waves-effect waves-light btn">Cancel</a>
 
           <?php 
             $has_po = false;
@@ -183,7 +206,7 @@
 
             }
             else 
-              echo '<button type="submit" form="viewPOForm" id="viewPOSubmit" name="viewPOSubmit" class="waves-effect waves-light btn">VIEW PURCHASE ORDER</button>';
+              echo '<button type="submit" form="viewPOForm" id="viewPOSubmit" name="viewPOSubmit" class="waves-effect waves-light btn">VIEW PO</button>';
           ?>
           
         </div>
@@ -206,7 +229,7 @@
 </form>
 
 <p id="p"></p>
-<div id="modal1" class="modal modal-fixed-footer" >
+<div id="modal1" class="modal modal-fixed-footer" style="width: 80%" >
   <div class="modal-content">
 
     <div class="row">
@@ -231,33 +254,24 @@
                   <th>Quantity</th>
                 </tr>
               </thead>
+
               <tbody id="tbody">
                 <?php
                   $sql = 'SELECT * FROM items';
                   $items =  mysqli_query($conn, $sql);
 
 
-                  $sql = ' select * from items i left outer join purchase_request_items pi ON i.item_code = pi.item_code WHERE pi.pr_number = ' . $pr_po_status['pr_number'] . ';';
+                  $sql = 'SELECT * FROM purchase_request pr, purchase_request_items pi, items i WHERE pr.pr_number = ' . $pr_po_status['pr_number'] . ' AND pr.pr_number = pi.pr_number AND pi.item_code = i.item_code;';
                   $pr_items = mysqli_query($conn, $sql);
 
                   while(($row = mysqli_fetch_assoc($items)) != null){
-                    $found = false;
+                   $sql = 'SELECT * FROM purchase_request pr, purchase_request_items pi, items i WHERE pr.pr_number = ' . $pr_po_status['pr_number'] . ' AND pr.pr_number = pi.pr_number AND pi.item_code = i.item_code AND i.item_code = "' . $row['item_code'] . '";';
+                    $pr_item = mysqli_query($conn, $sql);
 
-                    while(($pr_item = mysqli_fetch_assoc($pr_items)) != null){
-                      if($row['item_code'] == $pr_item['item_code']){
-                        echo '<tr>' .
-                          '<td><input type="checkbox" checked onclick="addSellectedItems('  . "'" . $row['item_code'] .  "'" . ')" id="' . $row['item_code'] . '" /> <label for="' . $row['item_code'] . '">'. $row['item_code'] . '</label></td> '.
-                          '<td id="idc' . $row['item_code'] . '">' . $row['item_description'] . '</td>' .
-                          '<td id="iu' . $row['item_code'] . '">' . $row['item_unit_measure'] . '</td>' .
-                          '<td ><input type="number" step=any class="active" required placeholder="E.U.C" name="euc" id="euc' . $row['item_code'] . '" value=' . $pr_item['pr_item_euc'] . '></td>' .
-                          '<td ><input type="number" class="active" required placeholder="Quantity" name="quantity" id="quantity' . $row['item_code'] .   '" value=' . $pr_item['quantity'] . '></td>'.
-                          '</tr>';
-                        $found = true;
-                        break;
-                      }
-                    }
+                    $row_count = mysqli_num_rows($pr_item);
 
-                    if(!$found){
+                    if($row_count < 1){
+
                       echo '<tr>' .
                         '<td><input type="checkbox" onclick="addSellectedItems('  . "'" . $row['item_code'] .  "'" . ')" id="' . $row['item_code'] . '" /> <label for="' . $row['item_code'] . '">'. $row['item_code'] . '</label></td> '.
                         '<td id="idc' . $row['item_code'] . '">' . $row['item_description'] . '</td>' .
@@ -265,7 +279,18 @@
                         '<td ><input type="number" step=any class="active" required placeholder="E.U.C" name="euc" id="euc' . $row['item_code'] . '" value=' . $row['item_euc'] . ' disabled></td>' .
                         '<td ><input type="number" class="active" required placeholder="Quantity" name="quantity" id="quantity' . $row['item_code'] .   '" disabled></td>'.
                         '</tr>';
+                    }else{
+                      $result = mysqli_fetch_assoc($pr_item);
+                      echo '<tr>' .
+                          '<td><input type="checkbox" checked onclick="addSellectedItems('  . "'" . $result['item_code'] .  "'" . ')" id="' . $result['item_code'] . '" /> <label for="' . 
+                          $result['item_code'] . '">'. $result['item_code'] . '</label></td> '.
+                          '<td id="idc' . $result['item_code'] . '">' . $result['item_description'] . '</td>' .
+                          '<td id="iu' . $result['item_code'] . '">' . $result['item_unit_measure'] . '</td>' .
+                          '<td ><input type="number" step=any class="active" required placeholder="E.U.C" name="euc" id="euc' . $result['item_code'] . '" value=' . $result['pr_item_euc'] . '></td>' .
+                          '<td ><input type="number" class="active" required placeholder="Quantity" name="quantity" id="quantity' . $result['item_code'] .   '" value=' . $result['quantity'] . '></td>'.
+                          '</tr>';
                     }
+                    
                   }
                 ?>
               </tbody>
@@ -366,10 +391,6 @@
     }
   }
 
-  function openModal(){
-    $("#modal1").openModal();
-  }
-
   function addPRItems(){
     var string = "";
     var total = 0;
@@ -460,3 +481,4 @@
   </script>
 </body>
 </html>
+<?php } ?>

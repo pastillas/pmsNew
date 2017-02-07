@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<?php
+  session_start();
+  if(!isset($_SESSION['name'])){
+    header("Location: index.php");
+  }
+  elseif(isset($_SESSION['name'])){
+?>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
   <title>Offices</title>
@@ -12,6 +19,10 @@
   <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
   <link href="css/items.css" type="text/css" rel="stylesheet" media="screen,projection"/>
   <link rel="stylesheet" type="text/css" href="css/datatable.css">
+
+  <link rel="stylesheet" type="text/css" href="css/sweetalert.css">
+  
+  <script src="js/sweetalert.min.js"></script>
   <style type="text/css">
   .side-nav li, 
   .side-nav .collapsible-header,
@@ -37,8 +48,10 @@
 			$sql = "INSERT INTO offices values('$office_code', '$office_head', '$office_name', '$office_department')";
 			
 			if(!mysqli_query($conn, $sql)){
-				echo "<script type='text/javascript'>alert('ERROR saving record.')</script>"  ;
-			}
+        echo '<script type="text/javascript">sweetAlert("Oops...", "Something went wrong!", "error");</script>';
+			}else{
+        echo '<script type="text/javascript">sweetAlert("Done!", "Add office success.", "success");</script>';
+      }
 		}
 
 	if(isset($_POST['editOfficeSubmit'])){
@@ -50,9 +63,10 @@
 		$sql = "UPDATE offices set office_head = '$office_head', office_name = '$office_name', office_department = '$office_department' WHERE office_code = '$office_code'";
 		
 		if(!mysqli_query($conn, $sql)){
-			echo "<script type='text/javascript'>alert('ERROR Saving Record.')</script>"  ;
-			mysqli_error($conn);
-		}
+        echo '<script type="text/javascript">sweetAlert("Oops...", "Something went wrong!", "error");</script>';
+		}else{
+        echo '<script type="text/javascript">sweetAlert("Done!", "Edit office success.", "success");</script>';
+    }
 	}
   ?>
  
@@ -194,3 +208,4 @@
 </script>
 </body>
 </html>
+<?php } ?>

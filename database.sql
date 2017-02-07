@@ -32,18 +32,26 @@ CREATE TABLE IF NOT EXISTS ITEMS(
 	CONSTRAINT item_code_pk PRIMARY KEY(item_code)
 );
 
-CREATE TABLE IF NOT EXISTS USERS(
-	user_id varchar(20) not null,
-	user_fname varchar(25)	not null,
-	user_lname varchar(25) not null,
-	user_position varchar(30) not null,
+CREATE TABLE IF NOT EXISTS USER(
+	first_name varchar(25)	not null,
+	last_name varchar(25) not null,
+	position varchar(30) not null,
 	username varchar(15) not null,
-	password varchar(15) not null,
-	CONSTRAINT user_id_pk PRIMARY KEY(user_id)
+	password varchar(50) not null,
+	CONSTRAINT user_id_pk PRIMARY KEY(username)
+);
+
+CREATE TABLE IF NOT EXISTS profpic(
+	id INT AUTO_INCREMENT NOT NULL,
+	image VARCHAR(200) NOT NULL,
+	username VARCHAR(20) NOT NULL,
+	CONSTRAINT id_pk PRIMARY KEY (id),
+	CONSTRAINT username_fk FOREIGN KEY(username) REFERENCES USER(username)
 );
 
 CREATE TABLE IF NOT EXISTS PURCHASE_REQUEST(
 	pr_number INT NOT NULL AUTO_INCREMENT, 
+	pr_number_orig VARCHAR(32) NOT NULL,
 	pr_year INT NOT NULL,
 	pr_department VARCHAR(32) NOT NULL,
 	pr_dev_section VARCHAR(32) NOT NULL,
@@ -64,6 +72,7 @@ CREATE TABLE IF NOT EXISTS PURCHASE_REQUEST_ITEMS(
 	item_code VARCHAR(20) NOT NULL,
 	pr_number INT NOT NULL,
 	pr_item_euc DOUBLE NOT NULL,
+	item_unit_tc DOUBLE NOT NULL,
 	CONSTRAINT pr_items_id PRIMARY KEY(pr_items_id),
 	CONSTRAINT item_code_fk FOREIGN KEY(item_code) REFERENCES ITEMS(item_code),
 	CONSTRAINT pr_number_fk_items FOREIGN KEY(pr_number) REFERENCES PURCHASE_REQUEST(pr_number)
@@ -71,6 +80,7 @@ CREATE TABLE IF NOT EXISTS PURCHASE_REQUEST_ITEMS(
 
 CREATE TABLE IF NOT EXISTS PURCHASE_ORDER(
 	po_number INT NOT NULL AUTO_INCREMENT,
+	po_number_orig  VARCHAR(32) NOT NULL,
 	po_year YEAR NOT NULL,
 	pr_number INT NOT NULL ,
 	po_mode_of_procurement VARCHAR(50) NULL,

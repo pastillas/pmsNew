@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<?php
+  session_start();
+  if(!isset($_SESSION['name'])){
+    header("Location: index.php");
+  }
+  elseif(isset($_SESSION['name'])){
+?>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
   <title>Items</title>
@@ -12,6 +19,10 @@
   <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
   <link href="css/items.css" type="text/css" rel="stylesheet" media="screen,projection"/>
   <link rel="stylesheet" type="text/css" href="css/datatable.css">
+
+  <link rel="stylesheet" type="text/css" href="css/sweetalert.css">
+  
+  <script src="js/sweetalert.min.js"></script>
   <style type="text/css">
   .side-nav li, 
   .side-nav .collapsible-header,
@@ -34,7 +45,9 @@
       
       $sql = "INSERT INTO items values('$item_code', '$item_description', '$item_unit_measure', '$item_expenditure', $item_euc);";
       if(!mysqli_query($conn, $sql)){
-        echo "<script type='text/javascript'>alert('ERROR Saving Record.')</script>"  ;
+        echo '<script type="text/javascript">sweetAlert("Oops...", "Something went wrong!", "error");</script>';
+      }else{
+        echo '<script type="text/javascript">sweetAlert("Done!", "Add item success.", "success");</script>';
       }
     }
       
@@ -47,7 +60,10 @@
       
       $sql = "UPDATE items set item_description = '$item_description', item_unit_measure = '$item_unit_measure', item_expenditure = '$item_expenditure', item_euc = $item_euc WHERE item_code = '$item_code';";
       if(!mysqli_query($conn, $sql)){
-        echo "<script type='text/javascript'>alert('ERROR Saving Record.')</script>"  ;
+        echo '<script type="text/javascript">sweetAlert("Oops...", "Something went wrong!", "error");</script>';
+      }else{
+
+        echo '<script type="text/javascript">sweetAlert("Done!", "Edit item success.", "success");</script>';
       }
     }
   ?>
@@ -196,3 +212,4 @@
 </script>
 </body>
 </html>
+<?php } ?>
