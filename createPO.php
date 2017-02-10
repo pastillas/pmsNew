@@ -18,7 +18,9 @@
   <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
   <link href="css/createPO.css" type="text/css" rel="stylesheet" media="screen,projection"/>
   <link href="css/sidenav.css" type="text/css" rel="stylesheet" media="screen,projection"/>
-
+  <link rel="stylesheet" type="text/css" href="css/sweetalert.css">
+  
+  <script src="js/sweetalert.min.js"></script>
   <style type="text/css">
     body{
         font-family: Arail, sans-serif;
@@ -53,6 +55,12 @@
     }
 </style>
 
+  <script type="text/javascript">
+    var pr_items = [];
+    var final_cost = 0;
+    var pr_number = "";
+  </script>
+
   <?php require('connection.php');
   require('navbar.php');
     if(!isset($_POST['pr_po_status_id'])){
@@ -61,6 +69,8 @@
 
     $pr_po_status_id = $_POST['pr_po_status_id'];
     $pr_number = $_POST['pr_number'];
+
+    echo '<script type="text/javascript">pr_number = ' . $pr_number . '</script>';
 
   ?>
 </head>
@@ -139,7 +149,6 @@
                   <label for="Payment_Term">D Tracks #</label>
                 </div>
             </div>
-          </form>
         </div>
       </div>
     </div>
@@ -153,6 +162,7 @@
           <th>Estimated Unit Cost</th>
           <th>Quantity</th>
           <th>Estimated Cost</th>
+          <th>(Php)Item Total Cost</th>
         </tr>
         </thead>
 
@@ -164,12 +174,17 @@
              $total = 0;
 
             while(($row = mysqli_fetch_assoc($pr_items)) != null){
+              echo '<script type="text/javascript"> pr_items["' . $row['item_code'] . '"] = "' . $row['pr_item_euc'] . '"; final_cost = (final_cost + ' . $row['pr_item_euc'] . ');</script>';
               echo '<tr>'.
                     '<td>' . $row['item_description'] . '</td>' . 
                     '<td>' . $row['item_unit_measure'] . '</td>' . 
                     '<td>Php ' . $row['pr_item_euc'] . '</td>' .
                     '<td>' . $row['quantity'] . '</td>' .
                     '<td>Php ' . $row['quantity'] * $row['pr_item_euc'] . '</td>' .
+                    '<td><div class="input-field col s12"> 
+                        <input name="' . $row['item_code'] . '" id= "' . $row['item_code'] . '" type="number" step="0.01" class="validate form-control" required="true" value="' . $row['pr_item_euc'] . '" onkeyup=updateItemFinalCost("' . $row['item_code'] . '") >
+                        <label for="' . $row['item_code'] . '">Item Total Cost</label>
+                      </div></td>' .
                     '</tr>';
                      
               $total += $row['quantity'] * $row['item_euc'];
@@ -178,11 +193,17 @@
          
          
           <tr>
-            <td class="tg-yw4l" colspan="4">Total Estimated Cost</td>
-            <td class="tg-yw4l" colspan="2"><?php echo 'Php ' . $total;?></td>
+            <td class="tg-yw4l" colspan="4"><b>Total Estimated Cost</b></td>
+            <td class="tg-yw4l" colspan="2"><b><?php echo 'Php ' . $total;?></b></td>
+          </tr>
+          <tr>
+            <td class="tg-yw4l" colspan="4"><b>Total Cost</b></td>
+            <td class="tg-yw4l" colspan="2" ><b id="finalCost"></b></td>
           </tr>
         </tbody>
       </table>
+
+      </form>
     <div class="col s9 offset-s3" style="margin-top:20px;">
         <a href="pendingPR.php" class="waves-effect waves-light btn">CANCEL</a>
         <button type="submit" form="createPOForm" id="createPOSubmit" name="createPOSubmit" class="waves-effect waves-light btn">CREATE PO</button>
@@ -200,6 +221,17 @@
  
  
   <script type="text/javascript">
+  function updateItemFinalCost(item_code){
+    pr_items[item_code] = document.getElementById(item_code).value;
+
+    final_cost = 0;
+    for(var key in pr_items){
+      final_cost = ((final_cost * 1) + (pr_items[key] * 1));
+    }
+
+    document.getElementById("finalCost").innerHTML = "Php " + final_cost;
+  }
+
    $('.datepicker').pickadate({
     selectMonths: true, // Creates a dropdown to control month
     selectYears: 15 // Creates a dropdown of 15 years to control year
@@ -226,6 +258,8 @@
   var supplier_pk = "";
 
   $(document).ready(function(){
+    document.getElementById("finalCost").innerHTML = "Php " + final_cost;
+
     $('.search-box input[type="text"]').on("keyup input", function(){
         /* Get input value on change */
         var term = $(this).val();
@@ -284,17 +318,39 @@
  function validatePO(){
   var valid = false;
     if(supplier_pk != null && supplier_name == document.getElementById('Supplier').value){
-      $.ajax({
-        url: "modules/insertPO.php",
-        method: "POST",
-        data: $('form').serialize(),
-        datatype: "text",
-        success: function(strMessage){
-            //document.getElementById('query').innerHTML = strMessage;
-            window.location = "http://localhost/pmsNew/pendingPR.php";
-        }
+      swal({
+        title: "Are you sure?",
+        text: "Please confirm add PO.",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Yes, Add PO!",
+        closeOnConfirm: false
+      },
+      function(){
+        $.ajax({
+          url: "modules/insertPO.php",
+          method: "POST",
+          data: $('form').serialize(),
+          datatype: "text",
+          success: function(strMessage){
+              //document.getElementById('query').innerHTML = strMessage;
+              for(var key in pr_items){
+                $.ajax({
+                  url: "modules/updateFinalCost.php",
+                  method: "POST",
+                  data: "pr_number=" + pr_number + "&item_code=" + key + "&final_item_cost=" + pr_items[key],
+                  datatype: "text",
+                  success: function(strMessage){
+                    
+                  }
+                });     
+              }
+              window.location = "http://localhost/pmsNew/pendingPR.php";
+
+          }
+        });
       });
-      valid = true;
     }else{  
       Materialize.toast('Please Select Supplier. Thank you.', 3000, 'rounded');
     }

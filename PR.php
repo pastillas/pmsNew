@@ -80,7 +80,7 @@
                        echo '<input " id="po_number_orig" name="po_number_orig" type="text" value="N/A" required="true" disabled="true">';
                       echo '<label for="po_number_orig">PO Number</label>';
                     }else{
-                      echo '<input " id="po_number_orig" name="po_number_orig" type="text" value="' . $purchase_order['po_number_orig'] . '" required="true" disabled="true">';
+                      echo '<input " id="po_number_orig" name="po_number_orig" type="text" value="' . $purhcase_order['po_number_orig'] . '" required="true" disabled="true">';
                       echo '<label for="po_number_orig">PO Number</label>';
                     }
                   ?>

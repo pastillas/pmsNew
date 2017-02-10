@@ -19,6 +19,9 @@
   <link href="css/sidenav.css" type="text/css" rel="stylesheet" media="screen,projection"/>
   <link rel="stylesheet" type="text/css" href="css/datatable.css">
   <link rel="stylesheet" type="text/css" href="css/sweetalert.css">
+  <link rel="stylesheet" type="text/css" href="css/sweetalert.css">
+  
+  <script src="js/sweetalert.min.js"></script>
   <style type="text/css">
     body{
         font-family: Arail, sans-serif;
@@ -52,6 +55,11 @@
         background: #f2f2f2;
     }
 </style>
+ <script type="text/javascript">
+    var pr_items = [];
+    var final_cost = 0;
+    var pr_number = "";
+  </script>
   <?php 
     require("navbar.php"); ?>
 </head>
@@ -75,7 +83,10 @@
   $query = mysqli_query($conn, $sql);
   $pr_number_orig = mysqli_fetch_array($query);
 
-  echo '<script type="text/javascript">var supplier_pk = ' . $result['supplier_pk'] . '; var supplier_name = "' . $result['supplier_name'] . '";</script>'
+  echo '<script type="text/javascript">var supplier_pk = ' . $result['supplier_pk'] . '; var supplier_name = "' . $result['supplier_name'] . '";</script>';
+
+
+    echo '<script type="text/javascript">pr_number = ' . $result['pr_number'] . '</script>';
 ?>
 
 <h4 class="center-align" style="margin-top: 72px"> VIEW/EDIT PURCHASE ORDER</h4>
@@ -157,7 +168,8 @@
                   <label for="Payment_Term">D Tracks #</label>
                 </div>
             </div>
-          </form>
+          
+      </form>
         </div>
       </div>
     </div>
@@ -171,6 +183,7 @@
           <th>Estimated Unit Cost</th>
           <th>Quantity</th>
           <th>Estimated Cost</th>
+          <th>(Php)Item Total Cost</th>
         </tr>
         </thead>
 
@@ -182,12 +195,18 @@
              $total = 0;
 
             while(($row = mysqli_fetch_assoc($pr_items)) != null){
+
+              echo '<script type="text/javascript"> pr_items["' . $row['item_code'] . '"] = "' . $row['item_unit_tc'] . '"; final_cost = (final_cost + ' . $row['item_unit_tc'] . ');</script>';
               echo '<tr>'.
                     '<td>' . $row['item_description'] . '</td>' . 
                     '<td>' . $row['item_unit_measure'] . '</td>' . 
                     '<td>Php ' . $row['pr_item_euc'] . '</td>' .
                     '<td>' . $row['quantity'] . '</td>' .
                     '<td>Php ' . $row['quantity'] * $row['pr_item_euc'] . '</td>' .
+                    '<td><div class="input-field col s12"> 
+                        <input name="' . $row['item_code'] . '" id= "' . $row['item_code'] . '" type="number" step="0.01" class="validate form-control" required="true" value="' . $row['item_unit_tc'] . '" onkeyup=updateItemFinalCost("' . $row['item_code'] . '") >
+                        <label for="' . $row['item_code'] . '">Item Total Cost</label>
+                      </div></td>' .
                     '</tr>';
                      
               $total += $row['quantity'] * $row['item_euc'];
@@ -198,6 +217,10 @@
           <tr>
           <td class="tg-yw4l" colspan="4"><b>Total Estimated Cost</b></td>
           <td class="tg-yw4l" colspan="2"><b><?php echo 'Php ' . $total;?></b></td>
+          </tr>
+          <tr>
+            <td class="tg-yw4l" colspan="4"><b>Total Cost</b></td>
+            <td class="tg-yw4l" colspan="2" ><b id="finalCost"></b></td>
           </tr>
         </tbody>
       </table>
@@ -222,7 +245,21 @@
   <script src="js/sweetalert.min.js"></script>
   <script type="text/javascript">
  
+   function updateItemFinalCost(item_code){
+    pr_items[item_code] = document.getElementById(item_code).value;
+
+    final_cost = 0;
+    for(var key in pr_items){
+      final_cost = ((final_cost * 1) + (pr_items[key] * 1));
+    }
+
+    document.getElementById("finalCost").innerHTML = "Php " + final_cost;
+  }
+
+
   $(document).ready(function(){
+    document.getElementById("finalCost").innerHTML = "Php " + final_cost;
+
     $('#deletePOSubmit').click(function(event){
       event.preventDefault();
         swal({
@@ -293,18 +330,29 @@
 
   function updatePO(){
     if(supplier_pk != null && supplier_name == document.getElementById('Supplier').value){
-      $.ajax({
+        $.ajax({
         url: "modules/updatePO.php",
         method: "POST",
         data: $('form').serialize(),
         datatype: "text",
         success: function(strMessage){
             //document.getElementById('query').innerHTML = strMessage;
+             for(var key in pr_items){
+                $.ajax({
+                  url: "modules/updateFinalCost.php",
+                  method: "POST",
+                  data: "pr_number=" + pr_number + "&item_code=" + key + "&final_item_cost=" + pr_items[key],
+                  datatype: "text",
+                  success: function(strMessage){
+                    
+                  }
+                });     
+              }
             Materialize.toast('Changes Saved.', 3000, 'rounded');
         }
       });
-
-    }else{  
+    }
+    else{  
       Materialize.toast('Please Select Supplier. Thank you.', 3000, 'rounded');
     }
 
