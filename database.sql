@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS SUPPLIER(
 CREATE TABLE IF NOT EXISTS ITEMS(
 	item_code VARCHAR(20) NOT NULL,
 	item_description VARCHAR(100) NOT NULL,
-	item_unit_measure VARCHAR(10) NOT NULL,
+	item_unit_measure VARCHAR(10) NOT NULL,	
 	item_expenditure VARCHAR(50) NOT NULL,
 	item_euc DOUBLE NOT NULL,
 	CONSTRAINT item_code_pk PRIMARY KEY(item_code)
